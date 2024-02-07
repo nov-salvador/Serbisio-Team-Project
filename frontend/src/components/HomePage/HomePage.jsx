@@ -5,7 +5,7 @@ import Category from './Category';
 import TopBanner from './TopBanner';
 import MidBanner from './MidBanner';
 import TopWorkers from './TopWorkers';
-import TopClients from './TopClients';
+import TopClients from './TopEmployers';
 import NewsLetter from '../NewsLetter';
 
 export default function HomePage() {
