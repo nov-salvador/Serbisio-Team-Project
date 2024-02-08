@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import HomePage from './components/HomePage/HomePage';
+import Header from './components/Header';
+import Footer from './components/Footer';
 
 function App() {
   const [message, setMessage] = useState('Happy Coding 🚀');
@@ -10,10 +13,13 @@ function App() {
   }
 
   return (
-    <>
-      <h1>{message}</h1>
-      <button onClick={fetchFromApi}>Get Message from API</button>
-    </>
+    <div className="mx-auto flex flex-col justify-center">
+        {/* <h1>{message}</h1>
+        <button onClick={fetchFromApi}>Get Message from API</button> */}
+        <Header />
+        <HomePage />
+        <Footer />
+      </div>
   );
 }
 
