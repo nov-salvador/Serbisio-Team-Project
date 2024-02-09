@@ -2,6 +2,7 @@ import React from 'react';
 import logo from '../assets/serbisyo-logo.png';
 import { PiDotsNineBold } from "react-icons/pi";
 import { LuHeart, LuSearch, LuBell, LuUser } from "react-icons/lu";
+import { NavLink } from 'react-router-dom';
 
 const loginUser = 'Guest'
 
@@ -14,11 +15,11 @@ const Header = () => {
                     <div>Welcome {loginUser} to Serbis.io</div>
                     <nav>
                         <ul className="flex space-x-4">
-                            <li><a href="#" className="hover:text-gray-400">POST JOB</a></li>
+                            <li><NavLink to="/jobs" className="hover:text-gray-400">POST JOB</NavLink></li>
                             <li>|</li>
-                            <li><a href="#" className="hover:text-gray-400">LATEST JOBS</a></li>
+                            <li><NavLink to="/jobs" className="hover:text-gray-400">LATEST JOBS</NavLink></li>
                             <li>|</li>
-                            <li><a href="#" className="hover:text-gray-400">TRENDING JOBS</a></li>
+                            <li><NavLink to="/jobs" className="hover:text-gray-400">TRENDING JOBS</NavLink></li>
                         </ul>
                     </nav>
                     <nav>
@@ -36,19 +37,19 @@ const Header = () => {
                     <div className="flex items-center space-x-4 flex-grow">
                         <PiDotsNineBold className="text-gray-900 hover:text-gray-300 cursor-pointer text-2xl" />
                         <ul className="flex space-x-4">
-                            <li><a href="#" className="hover:text-gray-400">Home</a></li>
+                            <li><NavLink exact to="/" activeClassName="text-gray-400" className="hover:text-gray-400">Home</NavLink></li>
                             <li>|</li>
-                            <li><a href="#" className="hover:text-gray-400">Category</a></li>
+                            <li><NavLink to="/category" activeClassName="text-gray-400" className="hover:text-gray-400">Category</NavLink></li>
                             <li>|</li>
-                            <li><a href="#" className="hover:text-gray-400">Clients</a></li>
+                            <li><NavLink to="/top-employers" activeClassName="text-gray-400" className="hover:text-gray-400">Clients</NavLink></li>
                             <li>|</li>
-                            <li><a href="#" className="hover:text-gray-400">Workers</a></li>
+                            <li><NavLink to="/top-workers" activeClassName="text-gray-400" className="hover:text-gray-400">Workers</NavLink></li>
                         </ul>
                     </div>
 
                     {/* Logo Centered */}
                     <div className="flex items-center space-x-4 flex-grow">
-                        <img src={logo} alt="Logo" className="h-8" style={{width: "50px", height: "auto"}} />
+                        <img src={logo} alt="Logo" className="h-8" style={{ width: "50px", height: "auto" }} />
                     </div>
 
                     {/* User Icons */}
@@ -63,6 +64,7 @@ const Header = () => {
                 </div>
             </header>
         </div>
+
     );
 }
 
