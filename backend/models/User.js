@@ -49,10 +49,13 @@ const UserSchema = new mongoose.Schema({
   },
   coverPicture: {},
   ratings: {
-    type: Map,
-    of: Number
+    type: Object,
+    default: {}
   },
-  isWorker: Boolean
+  isEmployer: {
+    type: Boolean,
+    default: false
+  }
     
 }, {timestamps: true});
 
