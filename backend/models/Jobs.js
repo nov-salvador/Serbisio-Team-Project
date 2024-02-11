@@ -49,8 +49,8 @@ const jobsSchema = new mongoose.Schema({
   location: {
     type: String,
   }
-});
+},{timestamps: true});
 
-const JobsModel = mongoose.model('Jobs', jobsSchema);
+const JobsModel = mongoose.model('jobs', jobsSchema);
 
 export default JobsModel;
