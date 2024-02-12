@@ -4,6 +4,7 @@ import { GrFormPreviousLink, GrFormNextLink } from "react-icons/gr";
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import axios from 'axios'
+import { NavLink } from 'react-router-dom';
 
 const SliderComponent = React.forwardRef((props, ref) => (
     <Slider {...props} ref={ref} />
@@ -81,7 +82,7 @@ export default function Jobs() {
                     <div className="flex items-center">
                         <PrevArrow onClick={() => handlePrevClick(shortTermSliderRef)} />
                         <NextArrow onClick={() => handleNextClick(shortTermSliderRef)} />
-                        <button className="text-gray px-4 py-1 rounded-full text-sm ml-1">See More</button>
+                        <NavLink to="/job-lists" className="text-gray px-4 py-1 rounded-full text-sm ml-1">See More</NavLink>
                     </div>
                 </div>
                 {renderJobSection(shortTermJobs, shortTermSliderRef)}
@@ -92,7 +93,7 @@ export default function Jobs() {
                     <div className="flex items-center">
                         <PrevArrow onClick={() => handlePrevClick(longTermSliderRef)} />
                         <NextArrow onClick={() => handleNextClick(longTermSliderRef)} />
-                        <button className="text-gray px-4 py-1 rounded-full text-sm ml-1">See More</button>
+                        <NavLink to="/job-lists" className="text-gray px-4 py-1 rounded-full text-sm ml-1">See More</NavLink>
                     </div>
                 </div>
                 {renderJobSection(longTermJobs, longTermSliderRef)}
