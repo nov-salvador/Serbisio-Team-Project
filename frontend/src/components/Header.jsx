@@ -49,7 +49,9 @@ const Header = () => {
 
                     {/* Logo Centered */}
                     <div className="flex items-center space-x-4 flex-grow">
+                        <NavLink to="/">
                         <img src={logo} alt="Logo" className="h-8" style={{ width: "50px", height: "auto" }} />
+                        </NavLink>
                     </div>
 
                     {/* User Icons */}
