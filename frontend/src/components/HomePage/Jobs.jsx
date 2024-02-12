@@ -3,7 +3,7 @@ import Slider from 'react-slick';
 import { GrFormPreviousLink, GrFormNextLink } from "react-icons/gr";
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import jobsData from '/Users/g.oroceo/Documents/GitHub/team-1/frontend/src/assets/jobs.json';
+import axios from 'axios'
 
 const SliderComponent = React.forwardRef((props, ref) => (
     <Slider {...props} ref={ref} />
@@ -23,7 +23,7 @@ const JobCard = ({ job }) => (
             <img src={job.photoUrl} alt={job.jobTitle} className="rounded-xl object-cover h-40 w-full" />
         </div>
         <div className="my-2 mx-5">
-            <p className="text-sm text-center">{job.id}</p>
+            <p className="text-sm text-center">{job._id}</p>
             <h2 className="font-semibold text-center text-xl">{job.jobTitle}</h2>
             <p className="text-sm text-center">{job.location}</p>
             <p className="text-md text-center font-semibold">{job.budgetPerHour} per hour</p>
@@ -51,13 +51,15 @@ const settings = {
 };
 
 export default function Jobs() {
-    const [jobs, setJobs] = useState([]);
     const shortTermSliderRef = useRef(null);
     const longTermSliderRef = useRef(null);
+    const [jobs, setJobs] = useState([]);
 
     useEffect(() => {
-        setJobs(jobsData);
-    }, []);
+      axios.get('http://localhost:3000/getJobs')
+      .then(jobs => setJobs(jobs.data))
+      .catch(err => console.log(err))
+    }, [])
 
     const handleNextClick = (ref) => {
         ref.current.slickNext();
