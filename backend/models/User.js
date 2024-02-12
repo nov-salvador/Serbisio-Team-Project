@@ -49,14 +49,18 @@ const UserSchema = new mongoose.Schema({
   },
   coverPicture: {},
   ratings: {
-    type: Object,
-    default: {}
+    communication: Number,
+    punctuality: Number,
+    qualityOfWork: Number,
   },
   isEmployer: {
     type: Boolean,
     default: false
-  }
-    
+  },
+  createdJobs: Number,
+  completedJobs: Number,
+  ratePerHour: Number,
+
 }, {timestamps: true});
 
 const User = mongoose.model("User", UserSchema);
