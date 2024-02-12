@@ -1,5 +1,5 @@
 import React from 'react'
-import Jobs from './Jobs';
+import Jobs from '../JobListing/Jobs';
 import Category from './Category';
 import TopBanner from './TopBanner';
 import MidBanner from './MidBanner';
