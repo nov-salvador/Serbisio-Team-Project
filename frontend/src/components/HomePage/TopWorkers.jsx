@@ -4,7 +4,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { GrFormPreviousLink, GrFormNextLink } from "react-icons/gr";
 import axios from 'axios';
-import UserPopup from './UserPopup';
+import UserPopup from '../UserProfile/UserPopup';
 
 
 const NextArrow = (props) => {

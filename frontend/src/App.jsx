@@ -9,6 +9,7 @@ import Category from './components/HomePage/Category';
 import Jobs from './components/HomePage/Jobs';
 import TopEmployers from './components/HomePage/TopEmployers';
 import TopWorkers from './components/HomePage/TopWorkers';
+import UserProfileLink from './components/UserProfile/UserProfileLink';
 
 function App() {
   const [message, setMessage] = useState('Happy Coding 🚀');
@@ -31,6 +32,7 @@ function App() {
           <Route path="top-employers" element={<TopEmployers />} />
           <Route path="top-workers" element={<TopWorkers />} />
           <Route path="about" element={<AboutPage />} />
+          <Route path="/:userId" element={<UserProfileLink />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
         <Footer />
