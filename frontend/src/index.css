@@ -7,3 +7,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+.popup-profile{
+  max-height: 90%;
+}

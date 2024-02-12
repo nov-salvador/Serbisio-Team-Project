@@ -17,7 +17,7 @@ const Header = () => {
                         <ul className="flex space-x-4">
                             <li><NavLink to="/jobs" className="hover:text-gray-400">POST JOB</NavLink></li>
                             <li>|</li>
-                            <li><NavLink to="/jobs" className="hover:text-gray-400">LATEST JOBS</NavLink></li>
+                            <li><NavLink to="/job-lists" className="hover:text-gray-400">LATEST JOBS</NavLink></li>
                             <li>|</li>
                             <li><NavLink to="/jobs" className="hover:text-gray-400">TRENDING JOBS</NavLink></li>
                         </ul>
