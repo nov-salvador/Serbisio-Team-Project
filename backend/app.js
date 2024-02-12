@@ -48,6 +48,18 @@ app.get('/getUsers', (req, res) => {
       .catch(err => res.json(err));
 });
 
+app.get('/getUser/:userId', (req, res) => {
+  const { userId } = req.params; // Extract userId from request params
+  User.findById(userId)
+    .then(user => {
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      res.json(user);
+    })
+    .catch(err => res.status(500).json({ error: err.message }));
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
