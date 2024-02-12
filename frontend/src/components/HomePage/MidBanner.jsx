@@ -2,9 +2,8 @@ import React from 'react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import bannerImage1 from '/src/assets/mid-banner/banner.png';
-import bannerImage2 from '/src/assets/mid-banner/banner.png';
-import bannerImage3 from '/src/assets/mid-banner/banner.png';
+import image1 from '/src/assets/mid-banner/1.png';
+import image2 from '/src/assets/mid-banner/2.webp';
 
 export default function MidBanner() {
   const settings = {
@@ -21,13 +20,10 @@ export default function MidBanner() {
     <div className="relative pb-12 text-center">
       <Slider {...settings}>
         <div>
-          <img src={bannerImage1} alt="Banner 1" className="object-cover mx-auto" />
+          <img src={image1} alt="Banner 1" className="object-cover mx-auto" />
         </div>
         <div>
-          <img src={bannerImage2} alt="Banner 2" className="object-cover mx-auto" />
-        </div>
-        <div>
-          <img src={bannerImage3} alt="Banner 3" className="object-cover mx-auto" />
+          <img src={image2} alt="Banner 2" className="object-cover mx-auto" />
         </div>
       </Slider>
     </div>

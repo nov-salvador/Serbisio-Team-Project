@@ -1,24 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { GrFormPreviousLink, GrFormNextLink } from "react-icons/gr";
+import axios from 'axios';
+import UserPopup from '../UserProfile/UserPopup';
 
-const urlImage = "https://cdn1.iconfinder.com/data/icons/avatar-2-2/512/Employee-512.png";
-
-//Dummy
-const topEmployers = [
-    { id: 1, FirstName: "John", LastName: "Smith", City: "New York", Photo_Url: urlImage, CreatedJob: 10, Rating: 4.5, TotalPaid: 5000 },
-    { id: 2, FirstName: "Emily", LastName: "Johnson", City: "Los Angeles", Photo_Url: urlImage, CreatedJob: 8, Rating: 4.2, TotalPaid: 4200 },
-    { id: 3, FirstName: "Michael", LastName: "Williams", City: "Chicago", Photo_Url: urlImage, CreatedJob: 12, Rating: 4.8, TotalPaid: 7200 },
-    { id: 4, FirstName: "Emma", LastName: "Jones", City: "Houston", Photo_Url: urlImage, CreatedJob: 6, Rating: 3.9, TotalPaid: 3900 },
-    { id: 5, FirstName: "Sophia", LastName: "Brown", City: "Phoenix", Photo_Url: urlImage, CreatedJob: 15, Rating: 4.7, TotalPaid: 8700 },
-    { id: 6, FirstName: "James", LastName: "Davis", City: "Philadelphia", Photo_Url: urlImage, CreatedJob: 18, Rating: 4.9, TotalPaid: 11000 },
-    { id: 7, FirstName: "Olivia", LastName: "Miller", City: "San Antonio", Photo_Url: urlImage, CreatedJob: 5, Rating: 3.5, TotalPaid: 3500 },
-    { id: 8, FirstName: "William", LastName: "Wilson", City: "San Diego", Photo_Url: urlImage, CreatedJob: 11, Rating: 4.6, TotalPaid: 6400 },
-    { id: 9, FirstName: "Ava", LastName: "Martinez", City: "Dallas", Photo_Url: urlImage, CreatedJob: 9, Rating: 4.4, TotalPaid: 5600 },
-    { id: 10, FirstName: "Alexander", LastName: "Anderson", City: "San Jose", Photo_Url: urlImage, CreatedJob: 7, Rating: 4.1, TotalPaid: 4700 }
-];
 
 const NextArrow = (props) => {
     const { onClick } = props;
@@ -43,7 +30,18 @@ const generateStars = (rating) => {
     return stars;
 };
 
-export default function TopEmployers() {
+export default function TopUser() {
+
+    const [user, setUser] = useState([]);
+    const [selectedEmployer, setSelectedEmployer] = useState(null);
+    const [modalVisible, setModalVisible] = useState(false);
+
+    useEffect(() => {
+        axios.get('http://localhost:3000/getUsers')
+            .then(response => setUser(response.data))
+            .catch(err => console.log(err))
+    }, []);
+    
     const sliderRef = React.useRef(null);
 
     const settings = {
@@ -56,7 +54,8 @@ export default function TopEmployers() {
         autoplaySpeed: 3000,
     };
 
-    const sortedEmployers = [...topEmployers].sort((a, b) => b.CreatedJob - a.CreatedJob);
+    const sortedUser = user.filter(user => user.ratings && typeof user.ratings.qualityOfWork === 'number')
+    .sort((a, b) => b.ratings.qualityOfWork - a.ratings.qualityOfWork);
 
     const handleNextClick = () => {
         sliderRef.current.slickNext();
@@ -66,11 +65,20 @@ export default function TopEmployers() {
         sliderRef.current.slickPrev();
     };
 
+    const handleViewServicesClick = (user) => {
+        setSelectedEmployer(user);
+        setModalVisible(true);
+    };
+
+    const handleCloseModal = () => {
+        setModalVisible(false);
+    };
+
     return (
         <div className="container mx-auto mb-10">
             <div className="flex justify-between items-center mb-4">
                 <div>
-                    <h2 className="font-semibold text-xl">Top Employer</h2>
+                    <h2 className="font-semibold text-xl">Top Employers</h2>
                 </div>
                 <div className="flex items-center">
                     <PrevArrow onClick={handlePrevClick} />
@@ -80,23 +88,28 @@ export default function TopEmployers() {
             </div>
             <div className="text-center mt-4">
                 <Slider {...settings} ref={sliderRef}>
-                    {sortedEmployers.map((employers) => (
-                        <div key={employers.id} className='text-center justify-center'>
+                    {sortedUser
+                    .filter(user => user.isEmployer === true)
+                    .map((user) => (
+                        <div key={user.id} className='text-center justify-center'>
                             <div className="text-center mx-2">
-                                <img src={employers.Photo_Url} alt={employers.Name} className="rounded-full object-cover h-30 w-30" />
+                                <img src={user.userPicture.url} className="rounded-full object-cover h-30 w-30" />
                                 <div className="flex justify-center mt-1">
-                                    {generateStars(employers.Rating)}
+                                    {generateStars(user.ratings.qualityOfWork)}<span className='text-xs my-auto'>&nbsp;{user.ratings.qualityOfWork}</span>
                                 </div>
                             </div>
                             <div className="my-2 mx-5">
-                                <h2 className="font-semibold text-center text-lg">{employers.FirstName} {employers.LastName.slice(0,1)}.</h2>
-                                <p className="text-md text-center font-semibold" style={{ fontSize: "12px" }}>Php {employers.TotalPaid} Total Paid</p>
-                                <p className="text-md text-center font-semibold" style={{ fontSize: "12px" }}>{employers.CreatedJob} jobs created</p>
-                                <button className="bg-sky-500 text-white px-2 py-2 mt-2 rounded-full text-xs w-full">View Job Offers</button>
+                               <h2 className="font-semibold text-center text-lg">{user.firstname} {user.lastname}</h2>
+                                <p className="text-md text-center font-semibold" style={{ fontSize: "12px" }}>Php ? Total Paid</p>
+                                <p className="text-md text-center font-semibold" style={{ fontSize: "12px" }}> {user.createdJobs} jobs created</p>
+                                <button onClick={() => handleViewServicesClick(user)} className="bg-sky-500 text-white px-2 py-2 mt-2 rounded-full text-xs w-full">View Job Offers</button>
                             </div>
                         </div>
                     ))}
                 </Slider>
+                {modalVisible && selectedEmployer && (
+                <UserPopup user={selectedEmployer} onClose={handleCloseModal} />
+            )}
             </div>
         </div>
     );

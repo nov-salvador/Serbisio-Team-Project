@@ -1,6 +1,5 @@
 import React from 'react'
-import ShortTermJobs from './ShortTermJobs';
-import LongTermJobs from './LongTermJobs';
+import Jobs from '../JobListing/Jobs';
 import Category from './Category';
 import TopBanner from './TopBanner';
 import MidBanner from './MidBanner';
@@ -18,10 +17,7 @@ export default function HomePage() {
                 <Category />
             </div>
             <div className="max-w-5xl mx-auto">
-                <ShortTermJobs />
-            </div>
-            <div className="max-w-5xl mx-auto">
-                <LongTermJobs />
+                <Jobs />
             </div>
             <div className="max-w-5xl mx-auto">
                 <MidBanner />
