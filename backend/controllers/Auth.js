@@ -11,15 +11,12 @@ export async function registerUser(req, res){
       lastname, 
       password, 
       email, 
-      username, 
       phoneNumber, 
       services, 
-      userLocation, 
-      coverPicture,
-      isWorker  
+      userLocation,  
     } = req.body
 
-    const result = await cloudinary.uploader.upload(req.file.path,)
+    // const result = await cloudinary.uploader.upload(req.file.path,)
 
     const salt = await bcrypt.genSalt();
 
@@ -28,18 +25,12 @@ export async function registerUser(req, res){
     const newUser = new User({
       firstname, 
       lastname, 
-      password, 
-      email, 
-      username, 
+      email,
+      password: passwordHash, 
       phoneNumber, 
       services, 
-      userLocation, 
-      userPicture:{
-        public_id: result.public_id,
-        url: result.secure_url
-      },
-      coverPicture,
-      isWorker  
+      userLocation,
+  
     })
 
     const savedUser = await newUser.save();
@@ -53,9 +44,9 @@ export async function registerUser(req, res){
 //Log in a User
 export async function loginUser(req, res){
   try{
-    const {username, password} = req.body;
+    const {email, password} = req.body;
 
-    const user = await User.findOne({username : username});
+    const user = await User.findOne({email : email});
     if(!user){
       return res.status(404).json({message: "invalid credential"})
     }

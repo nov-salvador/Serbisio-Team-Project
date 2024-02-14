@@ -1,25 +1,29 @@
-.container {
+.login-container {
     display: flex;
     flex-direction: column;
     margin: auto;
-    margin-top: 200px;
+    /* margin-top: 200px; */
     background: #fff;
     padding-bottom: 30px;
-    width: 600px;
+    width: 60%;
+    /* justify-content: center; */
+    align-items: center;
 }
 
-.inner-container {
+.login-inner-container {
     height: 350px;
+    border: 2px solid blue;
     overflow-y: scroll;
+    /* overflow-x: hidden; */
+    width: 100%;
 }
 
-.inner-container-noOver{
+.login-inner-container-noOver{
     overflow-y: hidden;
-    color: white;
-    background: transparent;
+    border: 2px solid blue;
 }
 
-.header {
+.login-header {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -28,7 +32,7 @@
     margin-top: 30px;
 }
 
-.text {
+.login-text {
     color: #086CC0;
     font-size: 48px;
     font-weight: 700;
@@ -117,24 +121,28 @@
     gap: 30px;
     margin: 60px auto;
 }
-
-.submit {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.submit-container .submit{
+    background-color: #10AEE5;
     width: 220px;
     height: 59px;
-    border-radius: 6px;
-    background: #10AEE5;
-    color: #fff;
+    cursor: pointer;
     font-size: 19px;
     font-weight: 700;
     border-radius: 50px;
-    cursor: pointer;
+    color: #fff;
 }
 
-.gray {
-    background: #eaeaea;
+.submit-container .gray{
+    background-color: #eaeaea;
     color: #676767;
+    width: 220px;
+    height: 59px;
+    cursor: pointer;
+    font-size: 19px;
+    font-weight: 700;
+    border-radius: 50px;
 }
-
+.error-validity{
+    text-align: center;
+    color: red;
+}

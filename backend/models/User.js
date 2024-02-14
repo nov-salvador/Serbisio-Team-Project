@@ -21,9 +21,8 @@ const UserSchema = new mongoose.Schema({
   },
   username:{
     type: String,
-    required: true,
     max: 50,
-    unique: true,
+    default: ""
   },
   password: {
     type: String,
@@ -37,7 +36,7 @@ const UserSchema = new mongoose.Schema({
   },
   services: {
     type: Array,
-    default: []
+    // default: []
   },
   userLocation: {
     type: String,

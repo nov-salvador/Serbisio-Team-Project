@@ -11,22 +11,30 @@ import TopEmployers from './components/HomePage/TopEmployers';
 import TopWorkers from './components/HomePage/TopWorkers';
 import UserProfileLink from './components/UserProfile/UserProfileLink';
 import JobLists from './components/JobListing/JobLists';
+import Loginsignup from './components/LoginSignup/LoginSignup';
 
 function App() {
   const [message, setMessage] = useState('Happy Coding 🚀');
 
-  async function fetchFromApi() {
-    const res = await fetch(import.meta.env.VITE_API_URL + '/api/user');
-    const data = await res.json();
-    setMessage(data.message);
-  }
+  const [login, setLogin] = useState(false);
+  const [loggedUser, setLoggedUser] = useState()
+
+  function updateLogin(newValue){
+    setLogin(newValue);
+  };
+
+  function updateUser(newValue){
+    setLoggedUser(newValue)
+  };
+  
 
   return (
-    <Router>
-      <div className="mx-auto flex flex-col justify-center">
-        <Header />
+    <Router> 
+        <div className="mx-auto flex flex-col justify-center">
+        {login && <Header user={loggedUser}/>}
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<Loginsignup updateLogin={updateLogin} updateUser={updateUser}/>} />
+          <Route path="/home" element={<HomePage />} />
           <Route path="category" element={<Category />} />
           <Route path="jobs" element={<Jobs />} />
           <Route path="category" element={<Category />} />
@@ -37,8 +45,8 @@ function App() {
           <Route path="/:userId" element={<UserProfileLink />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
-        <Footer />
-      </div>
+        {login &&<Footer />}
+        </div>
     </Router>
   );
 }
