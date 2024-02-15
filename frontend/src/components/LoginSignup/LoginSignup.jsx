@@ -154,8 +154,8 @@ const Loginsignup = ({updateLogin, updateUser}) => {
                 });
                 const user = await response.json();
                 if(user.message === "Successful login"){
-                    updateUser(user.user)
-                    updateLogin(true)
+                    updateUser(user.user);
+                    updateLogin(true);
                     navigate("/home");
                 }else{ alert(user.message)}
                 console.log('This is the reponse:', user);
