@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useLocation, useNavigate } from 'react-router';
 
 const JobListTable = ({ filteredJobs }) => {
     const formatDate = (postedDate) => {
@@ -91,7 +92,7 @@ const JobListTable = ({ filteredJobs }) => {
     );
 };
 
-export default function JobLists() {
+const JobLists = () => {
     const [jobs, setJobs] = useState([]);
     const [filteredJobs, setFilteredJobs] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState('');
@@ -99,7 +100,9 @@ export default function JobLists() {
     const [selectedDuration, setSelectedDuration] = useState('');
     const [categories, setCategories] = useState([]);
     const [locations, setLocations] = useState([]);
-
+    const location = useLocation();
+    const navigate = useNavigate();
+    
     useEffect(() => {
         axios.get('http://localhost:3000/getJobs')
             .then(response => {
@@ -109,11 +112,37 @@ export default function JobLists() {
                 setFilteredJobs(response.data);
                 setCategories(uniqueCategories);
                 setLocations(uniqueLocations);
+    
+                const searchParams = new URLSearchParams(location.search);
+                const categoryParam = searchParams.get('category');
+                if (categoryParam) {
+                    setSelectedCategory(categoryParam);
+                    filterJobs(categoryParam, selectedLocation, selectedDuration);
+                } else {
+                    handleSearch();
+                }
             })
             .catch(error => {
                 console.error('Error fetching jobs:', error);
             });
     }, []);
+    
+    useEffect(() => {
+        if (location.pathname === '/job-lists') {
+            handleSearch();
+        }
+    }, [location.pathname]);
+    
+
+    // useEffect(() => {
+    //     filterJobs(selectedCategory, selectedLocation, selectedDuration);
+    //     const params = new URLSearchParams();
+    //     params.set('category', selectedCategory);
+    //     params.set('location', selectedLocation);
+    //     params.set('duration', selectedDuration);
+    //     navigate(`/job-lists?${params.toString()}`);
+    // }, [selectedCategory, selectedLocation, selectedDuration]);
+
 
     const handleCategoryChange = (event) => {
         setSelectedCategory(event.target.value);
@@ -130,13 +159,20 @@ export default function JobLists() {
         filterJobs(selectedCategory, selectedLocation, event.target.value);
     };
 
-    const filterJobs = (category, location, duration) => {
-        const filtered = jobs.filter(job => {
-            return (category === '' || job.category === category) &&
-                (location === '' || job.location === location) &&
-                (duration === '' || checkDuration(job.duration, duration));
+    const filterJobs = async (category, location, duration) => {
+        return new Promise((resolve, reject) => {
+            const filtered = jobs.filter(job => {
+                return (category === '' || job.category === category) &&
+                    (location === '' || job.location === location) &&
+                    (duration === '' || checkDuration(job.duration, duration));
+            });
+            setFilteredJobs(filtered);
+            resolve(filtered);
         });
-        setFilteredJobs(filtered);
+    };
+
+    const handleSearch = () => {
+        filterJobs(selectedCategory, selectedLocation, selectedDuration);
     };
 
     const checkDuration = (jobDuration, selectedDuration) => {
@@ -166,39 +202,45 @@ export default function JobLists() {
     return (
         <div className="mx-auto flex flex-col justify-center my-10">
             <div className="flex mb-10">
-    <div className="mx-4">
-        <label htmlFor="category" className="mr-2">Category:</label>
-        <select id="category" value={selectedCategory} onChange={handleCategoryChange} className="border rounded-md px-2 py-1">
-            <option value="">All</option>
-            {categories.map(category => (
-                <option key={category} value={category}>{category}</option>
-            ))}
-        </select>
-    </div>
-    <div className="mx-4">
-        <label htmlFor="location" className="mr-2">Location:</label>
-        <select id="location" value={selectedLocation} onChange={handleLocationChange} className="border rounded-md px-2 py-1">
-            <option value="">All</option>
-            {locations.map(location => (
-                <option key={location} value={location}>{location}</option>
-            ))}
-        </select>
-    </div>
-    <div className="mx-4">
-        <label htmlFor="duration" className="mr-2">Duration:</label>
-        <select id="duration" value={selectedDuration} onChange={handleDurationChange} className="border rounded-md px-2 py-1">
-            <option value="">All</option>
-            <option value="1 week">less than a week</option>
-            <option value="1 month">less than a month</option>
-            <option value="3 months">less than 3 months</option>
-            <option value="3-6 months">3-6 months</option>
-            <option value="6-12 months">6-12 months</option>
-            <option value="1 year and up">more than a year</option>
-        </select>
-    </div>
-</div>
-
+                <div className="mx-4">
+                    <label htmlFor="category" className="mr-2">Category:</label>
+                    <select id="category" value={selectedCategory} onChange={handleCategoryChange} className="border rounded-md px-2 py-1">
+                        <option value="">All</option>
+                        {categories.map(category => (
+                            <option key={category} value={category}>{category}</option>
+                        ))}
+                    </select>
+                </div>
+                <div className="mx-4">
+                    <label htmlFor="location" className="mr-2">Location:</label>
+                    <select id="location" value={selectedLocation} onChange={handleLocationChange} className="border rounded-md px-2 py-1">
+                        <option value="">All</option>
+                        {locations.map(location => (
+                            <option key={location} value={location}>{location}</option>
+                        ))}
+                    </select>
+                </div>
+                <div className="mx-4">
+                    <label htmlFor="duration" className="mr-2">Duration:</label>
+                    <select id="duration" value={selectedDuration} onChange={handleDurationChange} className="border rounded-md px-2 py-1">
+                        <option value="">All</option>
+                        <option value="1 week">less than a week</option>
+                        <option value="1 month">less than a month</option>
+                        <option value="3 months">less than 3 months</option>
+                        <option value="3-6 months">3-6 months</option>
+                        <option value="6-12 months">6-12 months</option>
+                        <option value="1 year and up">more than a year</option>
+                    </select>
+                </div>
+                <div className="mx-4">
+                <button onClick={handleSearch} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Search
+                </button>
+            </div>
+            </div>
             <JobListTable filteredJobs={filteredJobs} />
         </div>
     );
-}
+};
+
+export default JobLists;
