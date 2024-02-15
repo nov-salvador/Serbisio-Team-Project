@@ -126,6 +126,10 @@ const JobLists = () => {
                 console.error('Error fetching jobs:', error);
             });
     }, []);
+
+    useEffect(()=>{
+        handleSearch();
+    })
     
     useEffect(() => {
         if (location.pathname === '/job-lists') {
