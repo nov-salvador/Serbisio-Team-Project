@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 
 export default function Category() {
     const [showAll, setShowAll] = useState(false);
-    const [categories, setJobs] = useState([]);
+    const [categories, setCategories] = useState([]);
 
     useEffect(() => {
         axios.get('http://localhost:3000/getCategory')
-            .then(response => setJobs(response.data))
+            .then(response => setCategories(response.data))
             .catch(error => console.log(error));
     }, []);
 
@@ -22,12 +23,12 @@ export default function Category() {
             <div className="">
                 <div className="flex flex-wrap w-fit">
                     {allCategories.map((category, index) => (
-                        <div key={index} className='m-2 p-4 text-center justify-center max-w-28'>
+                        <Link to={`/job-lists?category=${category.name}`} key={index} className='m-2 p-4 text-center justify-center max-w-28'>
                             <img src={category.photoUrl} className="rounded-xl object-cover" alt={category.name} />
                             <div className="my-2 m-auto text-wrap">
                                 <h2 className="font-semibold text-sm text-wrap">{category.name}</h2>
                             </div>
-                        </div>
+                        </Link>
                     ))}
                     {!showAll ? (
                         <div onClick={toggleShowAll} className='m-2 p-4 text-center justify-center max-w-28 cursor-pointer'>

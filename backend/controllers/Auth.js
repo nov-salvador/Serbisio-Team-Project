@@ -34,7 +34,7 @@ export async function registerUser(req, res){
     })
 
     const savedUser = await newUser.save();
-    res.status(201).json(savedUser)
+    res.status(201).json({message: "Successful Registration", savedUser})
   }catch(err){
     res.status(500).json({message: err.message})
   }
@@ -56,9 +56,11 @@ export async function loginUser(req, res){
       return res.status(400).json({message: "invalid credential"})
     }
 
+    const token = jwt.sign({userId: user._id}, process.env.JWT_SECRET);
+
     delete user.password;
     
-    res.status(200).json({user, message: "Successful login"})
+    res.status(200).json({user, message: "Successful login", token})
   }catch(err){
     res.status(500).json({message: err.message})
   }
