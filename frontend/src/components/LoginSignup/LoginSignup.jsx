@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import './Loginsignup.css'
 
 import user_icon from '../../assets/person.png';
@@ -8,7 +8,7 @@ import { Form, useNavigate } from "react-router-dom";
 import * as yup from 'yup'
 
 
-const Loginsignup = ({ updateLogin, updateUser }) => {
+const Loginsignup = ({updateUser, updateLogin}) => {
 
     const navigate = useNavigate();
     const [action, setAction] = useState("Sign Up");
@@ -23,11 +23,6 @@ const Loginsignup = ({ updateLogin, updateUser }) => {
         phoneNumber: yup.string().required("Contact number is required"),
         services: yup.string().required("Services number is required"),
         userLocation: yup.string().required("Locatinon number is required"),
-        // Define validation rules for other fields
-    });
-    const loginSchema = yup.object().shape({
-        email: yup.string().email("Invalid email format").required("Email is required"),
-        password: yup.string().required("Password is required"),
         // Define validation rules for other fields
     });
 
@@ -118,7 +113,7 @@ const Loginsignup = ({ updateLogin, updateUser }) => {
                     body: JSON.stringify(regFormData)
                 });
                 const user = await response.json();
-
+                
                 console.log('This is the reponse:', user);
                 setRegFormData({
                     firstname: '',
@@ -130,6 +125,10 @@ const Loginsignup = ({ updateLogin, updateUser }) => {
                     userLocation: '',
                     confirmPassword: ''
                 })
+                if(user.message === "Successful Registration"){
+                    setAction('Login');
+                }else{alert(`Please try again, ${user.message}` )}
+                
             } catch (error) {
                 console.error('Error:', error);
             }
@@ -150,11 +149,12 @@ const Loginsignup = ({ updateLogin, updateUser }) => {
                     body: JSON.stringify(loginFormData)
                 });
                 const user = await response.json();
-                if (user.message === "Successful login") {
-                    updateUser(user.user)
+                if(user.message === "Successful login"){
+                    localStorage.setItem('token', user.token)
+                    localStorage.setItem('user', JSON.stringify(user.user))
                     updateLogin(true)
                     navigate("/");
-                } else { alert(user.message) }
+                }else{ alert(user.message)}
                 console.log('This is the reponse:', user);
                 setLoginFormData({
                     email: '',
@@ -166,10 +166,9 @@ const Loginsignup = ({ updateLogin, updateUser }) => {
         }
 
     }
-    useEffect(() => {
+    // useEffect(() => {
 
-        console.log(action)
-    }, [action]);
+    // }, [action]);
 
     const cities = [
         "Caloocan City",
@@ -209,8 +208,8 @@ const Loginsignup = ({ updateLogin, updateUser }) => {
     ];
 
     return (
-        <div className="min-h-screen flex justify-center items-center bg-gray-500">
-            <div className="max-w-4xl w-full bg-white rounded-lg shadow-lg p-4 m-8 flex">
+        <div className="fixed top-0 left-0 w-full bg-black bg-opacity-50 flex justify-center items-center z-50 overflow-auto">
+            <div className="bg-white rounded-lg shadow-lg p-4 m-8 flex w-3/4 pop-container">
                 <div className="hidden lg:block lg:w-1/2 bg-white rounded-l-lg">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Working_man-obrero_2.jpg/640px-Working_man-obrero_2.jpg" alt="Description of your image" className="object-cover w-full h-full rounded-l-lg" />
                 </div>
@@ -305,7 +304,7 @@ const Loginsignup = ({ updateLogin, updateUser }) => {
                                     id="confirmPassword"
                                     name="confirmPassword"
                                     value={regFormData.confirmPassword}
-                                    onChange={handleChange}
+                                    onChange={handlePassword}
                                     onBlur={handleBlur}
                                     className="w-full px-3 py-2 mt-1 text-sm border rounded-md focus:outline-none focus:border-blue-500"
                                     placeholder="Confirm your password"

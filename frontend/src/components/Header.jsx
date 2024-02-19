@@ -1,16 +1,23 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import logo from '../assets/serbisyo-logo.png';
 import { PiDotsNineBold } from "react-icons/pi";
 import { LuHeart, LuSearch, LuBell, LuUser } from "react-icons/lu";
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
-const Header = ({user}) => {
+const Header = ({loggedUser, updateLogin}) => {
+    function handleLogout(){
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        updateLogin(false)
+    }
+    const getUser = localStorage.getItem('user')
+    const parseUser = JSON.parse(getUser)
     return (
         <div className=''>
             {/* Top Header */}
             <header className="bg-sky-500 text-white py-2 px-12 font-light text-xs">
                 <div className="container mx-auto flex justify-between items-center">
-                    <div>Welcome {user.firstname} to Serbis.io</div>
+                    <div>Welcome {getUser ? parseUser.firstname : 'Guest'} to Serbis.io</div>
                     <nav>
                         <ul className="flex space-x-4">
                             <li><NavLink to="/jobs" className="hover:text-gray-400">POST JOB</NavLink></li>
@@ -22,9 +29,10 @@ const Header = ({user}) => {
                     </nav>
                     <nav>
                         <ul className="flex space-x-4">
-                            <li><a href="#" className="hover:text-gray-400">{`Contact: +63 ${user.phoneNumber}`}</a></li>
+                            <li><a href="#" className="hover:text-gray-400">{getUser ? `Contact: +63 ${parseUser.phoneNumber}`: 'Contact: +63xxxxxxxxxx'}</a></li>
                         </ul>
                     </nav>
+                    <button type='button' onClick={handleLogout}>Logout</button>
                 </div>
             </header>
 
