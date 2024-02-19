@@ -1,0 +1,152 @@
+.login-container {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    /* margin-top: 200px; */
+    background: #fff;
+    padding-bottom: 30px;
+    width: 60%;
+    /* justify-content: center; */
+    align-items: center;
+}
+
+.login-inner-container {
+    height: 350px;
+    border: 2px solid blue;
+    overflow-y: scroll;
+    /* overflow-x: hidden; */
+    width: 100%;
+}
+
+.login-inner-container-noOver{
+    overflow-y: hidden;
+    border: 2px solid blue;
+}
+
+.login-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 9px;
+    width: 100%;
+    margin-top: 30px;
+}
+
+.login-text {
+    color: #086CC0;
+    font-size: 48px;
+    font-weight: 700;
+}
+
+.underline {
+    width: 61px;
+    height: 6px;
+    background: #086CC0;
+    border-radius: 9px;
+}
+
+.inputs {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+    margin-top: 55px;
+}
+
+.input {
+    display: flex;
+    align-items: center;
+    width: 480px;
+    height: 80px;
+    border-radius: 6px;
+    background: #eaeaea;
+}
+
+.input img {
+    margin: 0px 30px;
+}
+
+.input input {
+    width: 500px;
+    height: 50px;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 19px;
+    color: #797979;  
+}
+
+.input .location {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    height: 80px;
+    border-radius: 6px;
+    background: #eaeaea;
+    padding-right: 230px;
+    color: #797979;
+    font-weight: 550;
+    font-size: 17px;
+    border: transparent;
+}
+
+.input .services {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    height: 80px;
+    border-radius: 6px;
+    background: #eaeaea;
+    padding-right: 140px;
+    color: #797979;
+    font-weight: 550;
+    font-size: 17px;
+    border: transparent;
+}
+
+.forgot-password {
+    padding-left: 62px;
+    margin-top: 27px;
+    color: #797979;
+    font-size: 18px;
+}
+
+.forgot-password span {
+    color: #4c00b4;
+    cursor: pointer;
+}
+
+.submit-container {
+    display: flex;
+    gap: 30px;
+    margin: 60px auto;
+}
+.submit-container .submit{
+    background-color: #10AEE5;
+    width: 220px;
+    height: 59px;
+    cursor: pointer;
+    font-size: 19px;
+    font-weight: 700;
+    border-radius: 50px;
+    color: #fff;
+}
+
+.submit-container .gray{
+    background-color: #eaeaea;
+    color: #676767;
+    width: 220px;
+    height: 59px;
+    cursor: pointer;
+    font-size: 19px;
+    font-weight: 700;
+    border-radius: 50px;
+}
+.error-validity{
+    text-align: center;
+    color: red;
+}
+.pop-container{
+    max-height: 600px;
+    overflow-y: scroll;
+}

@@ -5,6 +5,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import axios from 'axios'
 import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const SliderComponent = React.forwardRef((props, ref) => (
     <Slider {...props} ref={ref} />
@@ -55,6 +56,8 @@ export default function Jobs() {
     const shortTermSliderRef = useRef(null);
     const longTermSliderRef = useRef(null);
     const [jobs, setJobs] = useState([]);
+    const [selectedJob, setSelectedJob] = useState(null);
+    const [modalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
       axios.get('http://localhost:3000/getJobs')
@@ -70,6 +73,17 @@ export default function Jobs() {
         ref.current.slickPrev();
     };
 
+
+    const handleViewServicesClick = (job) => {
+        setSelectedJob(job);
+        setModalVisible(true);
+    };
+
+    const handleCloseModal = () => {
+        setModalVisible(false);
+    };
+    
+
     const longTermJobs = jobs.filter(job => job.duration > 90);
     const shortTermJobs = jobs.filter(job => job.duration <= 90);
 
@@ -82,7 +96,7 @@ export default function Jobs() {
                     <div className="flex items-center">
                         <PrevArrow onClick={() => handlePrevClick(shortTermSliderRef)} />
                         <NextArrow onClick={() => handleNextClick(shortTermSliderRef)} />
-                        <NavLink to="/job-lists" className="text-gray px-4 py-1 rounded-full text-sm ml-1">See More</NavLink>
+                        <NavLink to="/job-lists?category=&location=&duration=3+months" className="text-gray px-4 py-1 rounded-full text-sm ml-1">See More</NavLink>
                     </div>
                 </div>
                 {renderJobSection(shortTermJobs, shortTermSliderRef)}
@@ -93,7 +107,7 @@ export default function Jobs() {
                     <div className="flex items-center">
                         <PrevArrow onClick={() => handlePrevClick(longTermSliderRef)} />
                         <NextArrow onClick={() => handleNextClick(longTermSliderRef)} />
-                        <NavLink to="/job-lists" className="text-gray px-4 py-1 rounded-full text-sm ml-1">See More</NavLink>
+                        <NavLink to="/job-lists?category=&location=&duration=3%2B+months" className="text-gray px-4 py-1 rounded-full text-sm ml-1">See More</NavLink>
                     </div>
                 </div>
                 {renderJobSection(longTermJobs, longTermSliderRef)}

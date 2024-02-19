@@ -17,7 +17,7 @@ app.use("/auth", authRoute)
 
 
 //Single Route
-app.post("/auth/register",upload.single("userPicture"), registerUser);
+app.post("/auth/register", registerUser);
 
 app.post("/upload", upload.single("userPicture"), uploadImg)
 

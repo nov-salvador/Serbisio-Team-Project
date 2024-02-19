@@ -11,15 +11,12 @@ export async function registerUser(req, res){
       lastname, 
       password, 
       email, 
-      username, 
       phoneNumber, 
       services, 
-      userLocation, 
-      coverPicture,
-      isWorker  
+      userLocation,  
     } = req.body
 
-    const result = await cloudinary.uploader.upload(req.file.path,)
+    // const result = await cloudinary.uploader.upload(req.file.path,)
 
     const salt = await bcrypt.genSalt();
 
@@ -28,22 +25,16 @@ export async function registerUser(req, res){
     const newUser = new User({
       firstname, 
       lastname, 
-      password, 
-      email, 
-      username, 
+      email,
+      password: passwordHash, 
       phoneNumber, 
       services, 
-      userLocation, 
-      userPicture:{
-        public_id: result.public_id,
-        url: result.secure_url
-      },
-      coverPicture,
-      isWorker  
+      userLocation,
+  
     })
 
     const savedUser = await newUser.save();
-    res.status(201).json(savedUser)
+    res.status(201).json({message: "Successful Registration", savedUser})
   }catch(err){
     res.status(500).json({message: err.message})
   }
@@ -53,9 +44,9 @@ export async function registerUser(req, res){
 //Log in a User
 export async function loginUser(req, res){
   try{
-    const {username, password} = req.body;
+    const {email, password} = req.body;
 
-    const user = await User.findOne({username : username});
+    const user = await User.findOne({email : email});
     if(!user){
       return res.status(404).json({message: "invalid credential"})
     }
@@ -65,9 +56,11 @@ export async function loginUser(req, res){
       return res.status(400).json({message: "invalid credential"})
     }
 
+    const token = jwt.sign({userId: user._id}, process.env.JWT_SECRET);
+
     delete user.password;
     
-    res.status(200).json({user, message: "Successful login"})
+    res.status(200).json({user, message: "Successful login", token})
   }catch(err){
     res.status(500).json({message: err.message})
   }

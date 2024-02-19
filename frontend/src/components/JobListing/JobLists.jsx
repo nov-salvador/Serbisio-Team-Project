@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useLocation, useNavigate } from 'react-router';
 
 const JobListTable = ({ filteredJobs }) => {
     const formatDate = (postedDate) => {
@@ -47,10 +48,11 @@ const JobListTable = ({ filteredJobs }) => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
                 {filteredJobs.map((job, index) => (
-                    <tr key={job.id}>
+                    <tr key={job._id}>
                         <td className="px-6 py-4 whitespace-nowrap">
                             <div className="text-sm text-gray-900">{index + 1}</div>
                         </td>
+
                         <td className="px-6 py-4 whitespace-nowrap">
                             <div className="text-sm text-gray-900">{formatDate(job.postedDate)}</div>
                         </td>
@@ -72,7 +74,7 @@ const JobListTable = ({ filteredJobs }) => {
                         </td>
                         <td className="px-6 py-4 whitespace-wrap">
                             <div className="text-sm text-gray-900">Php {job.budgetPerHour} /hour</div>
-                            <div className="text-xs text-gray-500">Duration: {job.duration} days</div>
+                            <div className="text-xs text-gray-500">Est: {job.duration} days</div>
                         </td>
                         <td className="px-6 py-4 whitespace-wrap">
                             <div className="text-sm text-gray-900">{job.category}</div>
@@ -91,14 +93,17 @@ const JobListTable = ({ filteredJobs }) => {
     );
 };
 
-export default function JobLists() {
+const JobLists = () => {
     const [jobs, setJobs] = useState([]);
     const [filteredJobs, setFilteredJobs] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState('');
     const [selectedLocation, setSelectedLocation] = useState('');
     const [selectedDuration, setSelectedDuration] = useState('');
+    const [selectedOrder, setSelectedOrder] = useState('');
     const [categories, setCategories] = useState([]);
     const [locations, setLocations] = useState([]);
+    const location = useLocation();
+    const navigate = useNavigate();
 
     useEffect(() => {
         axios.get('http://localhost:3000/getJobs')
@@ -109,34 +114,88 @@ export default function JobLists() {
                 setFilteredJobs(response.data);
                 setCategories(uniqueCategories);
                 setLocations(uniqueLocations);
+
+                const searchParams = new URLSearchParams(location.search);
+                const categoryParam = searchParams.get('category');
+                const durationParam = searchParams.get('duration');
+                if (categoryParam) {
+                    setSelectedCategory(categoryParam);
+                    filterJobs(categoryParam, selectedLocation, selectedDuration, selectedOrder);
+                }
+                if (durationParam) {
+                    setSelectedDuration(durationParam);
+                    filterJobs(selectedCategory, selectedLocation, durationParam, selectedOrder);
+                }
+                else {
+                }
             })
             .catch(error => {
                 console.error('Error fetching jobs:', error);
             });
     }, []);
 
-    const handleCategoryChange = (event) => {
-        setSelectedCategory(event.target.value);
-        filterJobs(event.target.value, selectedLocation, selectedDuration);
-    };
+    useEffect(() => {
+        filterJobs(selectedCategory, selectedLocation, selectedDuration, selectedOrder);
+    }, [selectedCategory, selectedLocation, selectedDuration, selectedOrder]);
+    
+    useEffect(() => {
+        handleSearch();
+    });
 
-    const handleLocationChange = (event) => {
-        setSelectedLocation(event.target.value);
-        filterJobs(selectedCategory, event.target.value, selectedDuration);
-    };
+    useEffect(() => {
+        filterJobs(selectedCategory, selectedLocation, selectedDuration, selectedOrder);
+        const params = new URLSearchParams();
+        params.set('category', selectedCategory);
+        params.set('location', selectedLocation);
+        params.set('duration', selectedDuration);
+        params.set('order', selectedOrder);
+        navigate(`/job-lists?${params.toString()}`);
+    }, [selectedCategory, selectedLocation, selectedDuration, selectedOrder]);
 
-    const handleDurationChange = (event) => {
-        setSelectedDuration(event.target.value);
-        filterJobs(selectedCategory, selectedLocation, event.target.value);
+    const handleFilterChange = (event, filterType) => {
+        const value = event.target.value;
+        switch (filterType) {
+            case 'category':
+                setSelectedCategory(value);
+                filterJobs(value, selectedLocation, selectedDuration, selectedOrder);
+                break;
+            case 'location':
+                setSelectedLocation(value);
+                filterJobs(selectedCategory, value, selectedDuration, selectedOrder);
+                break;
+            case 'duration':
+                setSelectedDuration(value);
+                filterJobs(selectedCategory, selectedLocation, value, selectedOrder);
+                break;
+            case 'order':
+                setSelectedOrder(value);
+                filterJobs(selectedCategory, selectedLocation, selectedDuration, value);
+                break;
+            default:
+                break;
+        }
     };
+    
+    const filterJobs = async (category, location, duration, order) => {
+        return new Promise((resolve, reject) => {
+            let filtered = jobs.filter(job => {
+                return (category === '' || job.category === category) &&
+                    (location === '' || job.location === location) &&
+                    (duration === '' || checkDuration(job.duration, duration,));
+            });
+            if (order === 'dateAscending') {
+                filtered = filtered.sort((a, b) => new Date(a.postedDate) - new Date(b.postedDate));
+            } else if (order === 'dateDescending') {
+                filtered = filtered.sort((a, b) => new Date(b.postedDate) - new Date(a.postedDate));
+            }
 
-    const filterJobs = (category, location, duration) => {
-        const filtered = jobs.filter(job => {
-            return (category === '' || job.category === category) &&
-                (location === '' || job.location === location) &&
-                (duration === '' || checkDuration(job.duration, duration));
+            setFilteredJobs(filtered);
+            resolve(filtered);
         });
-        setFilteredJobs(filtered);
+    };
+
+    const handleSearch = () => {
+        filterJobs(selectedCategory, selectedLocation, selectedDuration, selectedOrder);
     };
 
     const checkDuration = (jobDuration, selectedDuration) => {
@@ -148,8 +207,10 @@ export default function JobLists() {
                 return durationInDays <= 30;
             case '3 months':
                 return durationInDays <= 90;
+            case '3+ months':
+                return durationInDays > 90;
             case '3-6 months':
-                return durationInDays >= 90 && durationInDays <= 180; 
+                return durationInDays >= 90 && durationInDays <= 180;
             case '6-12 months':
                 return durationInDays <= 365 && durationInDays > 180;
             case '1 year and up':
@@ -166,39 +227,54 @@ export default function JobLists() {
     return (
         <div className="mx-auto flex flex-col justify-center my-10">
             <div className="flex mb-10">
-    <div className="mx-4">
-        <label htmlFor="category" className="mr-2">Category:</label>
-        <select id="category" value={selectedCategory} onChange={handleCategoryChange} className="border rounded-md px-2 py-1">
-            <option value="">All</option>
-            {categories.map(category => (
-                <option key={category} value={category}>{category}</option>
-            ))}
-        </select>
-    </div>
-    <div className="mx-4">
-        <label htmlFor="location" className="mr-2">Location:</label>
-        <select id="location" value={selectedLocation} onChange={handleLocationChange} className="border rounded-md px-2 py-1">
-            <option value="">All</option>
-            {locations.map(location => (
-                <option key={location} value={location}>{location}</option>
-            ))}
-        </select>
-    </div>
-    <div className="mx-4">
-        <label htmlFor="duration" className="mr-2">Duration:</label>
-        <select id="duration" value={selectedDuration} onChange={handleDurationChange} className="border rounded-md px-2 py-1">
-            <option value="">All</option>
-            <option value="1 week">less than a week</option>
-            <option value="1 month">less than a month</option>
-            <option value="3 months">less than 3 months</option>
-            <option value="3-6 months">3-6 months</option>
-            <option value="6-12 months">6-12 months</option>
-            <option value="1 year and up">more than a year</option>
-        </select>
-    </div>
-</div>
-
+                <div className="mx-4">
+                    <label htmlFor="category" className="mr-2">Category:</label>
+                    <select id="category" value={selectedCategory} onChange={(e) => handleFilterChange(e, 'category')} className="border rounded-md px-2 py-1">
+                        <option value="">All</option>
+                        {categories.map(category => (
+                            <option key={category} value={category}>{category}</option>
+                        ))}
+                    </select>
+                </div>
+                <div className="mx-4">
+                    <label htmlFor="location" className="mr-2">Location:</label>
+                    <select id="location" value={selectedLocation} onChange={(e) => handleFilterChange(e, 'location')} className="border rounded-md px-2 py-1">
+                        <option value="">All</option>
+                        {locations.map(location => (
+                            <option key={location} value={location}>{location}</option>
+                        ))}
+                    </select>
+                </div>
+                <div className="mx-4">
+                    <label htmlFor="duration" className="mr-2">Duration:</label>
+                    <select id="duration" value={selectedDuration} onChange={(e) => handleFilterChange(e, 'duration')} className="border rounded-md px-2 py-1">
+                        <option value="">All</option>
+                        <option value="1 week">less than a week</option>
+                        <option value="1 month">less than a month</option>
+                        <option value="3 months">less than 3 months</option>
+                        <option value="3+ months">more than 3 months</option>
+                        <option value="3-6 months">3-6 months</option>
+                        <option value="6-12 months">6-12 months</option>
+                        <option value="1 year and up">more than a year</option>
+                    </select>
+                </div>
+                <div className="mx-4">
+                    <label htmlFor="sort" className="mr-2">Sort By:</label>
+                    <select id="order" value={selectedOrder} onChange={(e) => handleFilterChange(e, 'order')} className="border rounded-md px-2 py-1">
+                        <option value="">All</option>
+                        <option value="dateAscending">Date (Ascending)</option>
+                        <option value="dateDescending">Date (Descending)</option>
+                    </select>
+                </div>
+                <div className="mx-4">
+                    {/* <button onClick={handleSearch} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded">
+                    Search
+                </button> */}
+                </div>
+            </div>
             <JobListTable filteredJobs={filteredJobs} />
         </div>
     );
-}
+};
+
+export default JobLists;
