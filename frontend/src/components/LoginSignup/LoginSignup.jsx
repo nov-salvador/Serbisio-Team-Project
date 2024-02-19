@@ -1,9 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import './Loginsignup.css'
-
-import user_icon from '../../assets/person.png';
-import email_icon from '../../assets/email.png';
-import password_icon from '../../assets/password.png';
 import { Form, useNavigate } from "react-router-dom";
 import * as yup from 'yup'
 
@@ -21,20 +16,17 @@ const Loginsignup = ({updateUser, updateLogin}) => {
         email: yup.string().email("Invalid email format").required("Email is required"),
         password: yup.string().required("Password is required"),
         phoneNumber: yup.string().required("Contact number is required"),
-        services: yup.string().required("Services number is required"),
-        userLocation: yup.string().required("Locatinon number is required"),
-        // Define validation rules for other fields
+        isEmployer: yup.string(),
     });
 
     const [regFormData, setRegFormData] = useState({
         firstname: '',
         lastname: '',
         email: '',
-        password: '',
         phoneNumber: '',
-        services: '',
-        userLocation: '',
-        confirmPassword: ''
+        password: '',
+        confirmPassword: '',
+        isEmployer: ''
     });
     const [loginFormData, setLoginFormData] = useState({
         email: '',
@@ -43,12 +35,23 @@ const Loginsignup = ({updateUser, updateLogin}) => {
     const [errors, setErrors] = useState({});
     const [isPassMatched, setIsPassMatched] = useState(true);
 
-    const handleChange = async (event) => {
+    const handleChange = (event) => {
         const { name, value } = event.target;
-        setRegFormData(prevregFormData => ({
-            ...prevregFormData,
-            [name]: value
-        }));
+    
+        // For radio buttons, set the value directly
+        if (name === 'isEmployer') {
+            const newValue = value === 'true';
+            setRegFormData(prevregFormData => ({
+                ...prevregFormData,
+                [name]: newValue
+            }));
+        } else {
+            // For other fields, update normally
+            setRegFormData(prevregFormData => ({
+                ...prevregFormData,
+                [name]: value
+            }));
+        }
     };
 
     const handleLoginChange = async (event) => {
@@ -96,10 +99,10 @@ const Loginsignup = ({updateUser, updateLogin}) => {
 
     async function handleSubmit(event) {
         event.preventDefault();
-        console.log(regFormData)
+        console.log(regFormData);
         if (action === "Sign Up") {
             for (const key in regFormData) {
-                if (regFormData[key].trim() === '') {
+                if (typeof regFormData[key] === 'string' && regFormData[key].trim() === '') {
                     alert('Please fill in all fields.');
                     return;
                 }
@@ -114,20 +117,21 @@ const Loginsignup = ({updateUser, updateLogin}) => {
                 });
                 const user = await response.json();
                 
-                console.log('This is the reponse:', user);
+                console.log('This is the response:', user);
                 setRegFormData({
                     firstname: '',
                     lastname: '',
                     email: '',
-                    password: '',
                     phoneNumber: '',
-                    services: '',
-                    userLocation: '',
-                    confirmPassword: ''
-                })
-                if(user.message === "Successful Registration"){
+                    password: '',
+                    confirmPassword: '',
+                    isEmployer: ''
+                });
+                if(user.message === "Successful Registration") {
                     setAction('Login');
-                }else{alert(`Please try again, ${user.message}` )}
+                } else {
+                    alert(`Please try again, ${user.message}`);
+                }
                 
             } catch (error) {
                 console.error('Error:', error);
@@ -166,54 +170,14 @@ const Loginsignup = ({updateUser, updateLogin}) => {
         }
 
     }
-    // useEffect(() => {
-
-    // }, [action]);
-
-    const cities = [
-        "Caloocan City",
-        "Makati City",
-        "Malabon City",
-        "Mandaluyong City",
-        "Manila City",
-        "Marikina City",
-        "Muntinlupa City",
-        "Navotas City",
-        "Parañaque City",
-        "Pasay City",
-        "Pasig City",
-        "Pateros",
-        "Quezon City",
-        "San Juan City",
-        "Taguig City",
-        "Valenzuela City"
-    ];
-    const services = [
-        "Construction",
-        "Maintenance & Services",
-        "Transportation",
-        "Manufacturing",
-        "Security",
-        "Technician & Mechanical",
-        "Retail & Hospitality",
-        "Writing and Content Creation",
-        "Administration",
-        "Education",
-        "Online Marketing",
-        "Multimedia",
-        "Fitness",
-        "Childcare",
-        "Development and IT Services",
-        "Project Management"
-    ];
-
+    
     return (
-        <div className="fixed top-0 left-0 w-full bg-black bg-opacity-50 flex justify-center items-center z-50 overflow-auto">
-            <div className="bg-white rounded-lg shadow-lg p-4 m-8 flex w-3/4 pop-container">
-                <div className="hidden lg:block lg:w-1/2 bg-white rounded-l-lg">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Working_man-obrero_2.jpg/640px-Working_man-obrero_2.jpg" alt="Description of your image" className="object-cover w-full h-full rounded-l-lg" />
-                </div>
-                <div className="w-full lg:w-1/2 p-8 bg-white">
+        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <div className="bg-white rounded-lg shadow-lg lg:h-4/5 w-full lg:w-3/4 pop-container flex flex-col lg:flex-row">
+            <div className="hidden md:block lg:w-1/2 bg-white rounded-l-lg justify-center items-center overflow-hidden">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Working_man-obrero_2.jpg/640px-Working_man-obrero_2.jpg" alt="Description of your image" className="object-cover w-full h-full rounded-l-lg" />
+            </div>
+            <div className="w-full lg:w-1/2 p-8 bg-white overflow-y-auto">
                     <h3 className="text-2xl font-bold text-gray-800 text-center mb-6">{isRegister ? "Create an Account!" : "Login"}</h3>
                     <form onSubmit={handleSubmit}>
                         {/* First Name and Last Name */}
@@ -312,44 +276,39 @@ const Loginsignup = ({updateUser, updateLogin}) => {
                                 {isPassMatched === false && <p className="error-validity text-red-500 text-xs mt-1">Passwords do not match</p>}
                             </div>
                         )}
-                        {/* Services */}
-                        {isRegister && (
-                            <div className="mb-4">
-                                <label htmlFor="services" className="block text-sm font-bold text-gray-700">Services</label>
-                                <select
-                                    id="services"
-                                    name="services"
-                                    value={regFormData.services}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    className="w-full px-3 py-2 mt-1 text-sm border rounded-md focus:outline-none focus:border-blue-500"
-                                >
-                                    <option value="">Select Primary Service</option>
-                                    {services.map((el, i) => (
-                                        <option key={i} value={el}>{el}</option>)
-                                    )}
-                                </select>
-                                {errors.services && <p className="error-validity text-red-500 text-xs mt-1">{errors.services}</p>}
-                            </div>
-                        )}
-                        {/* User Location */}
+                          {/* User Type (Looking for Talent / Looking for Job) */}
                         {isRegister && (
                             <div className="mb-6">
-                                <label htmlFor="userLocation" className="block text-sm font-bold text-gray-700">Location</label>
-                                <select
-                                    id="userLocation"
-                                    name="userLocation"
-                                    value={regFormData.userLocation}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    className="w-full px-3 py-2 mt-1 text-sm border rounded-md focus:outline-none focus:border-blue-500"
-                                >
-                                    <option value="">Select a location</option>
-                                    {cities.map((el, i) => (
-                                        <option key={i} value={el}>{el}</option>)
-                                    )}
-                                </select>
-                                {errors.userLocation && <p className="error-validity text-red-500 text-xs mt-1">{errors.userLocation}</p>}
+                                <label className="block text-sm font-bold text-center text-gray-700">What are you looking for?</label>
+                                <div className="flex justify-between mx-2">
+                                    <div className="flex items-center mt-2">
+                                        <input
+                                            type="radio"
+                                            id="lookingForTalent"
+                                            name="isEmployer"
+                                            value="true"
+                                            checked={regFormData.isEmployer === 'true'}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            className="mr-2"
+                                        />
+                                        <label htmlFor="lookingForTalent" className="text-sm text-gray-800">Looking for Talent</label>
+                                    </div>
+                                    <div className="flex items-center mt-2">
+                                        <input
+                                            type="radio"
+                                            id="lookingForJob"
+                                            name="isEmployer"
+                                            value="false"
+                                            checked={regFormData.isEmployer === 'false'}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            className="mr-2"
+                                        />
+                                        <label htmlFor="lookingForJob" className="text-sm text-gray-800">Looking for Job</label>
+                                    </div>
+                                    {errors.isEmployer && <p className="error-validity text-red-500 text-xs mt-1">{errors.isEmployer}</p>}
+                                </div>
                             </div>
                         )}
                         {/* Submit Button */}
