@@ -31,7 +31,7 @@ function App() {
       setLogin(true)
     }
 
-  }, [true])
+  }, [login])
   return (
         <Router> 
             <div className="mx-auto flex flex-col justify-center">

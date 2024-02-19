@@ -26,7 +26,7 @@ const Loginsignup = ({updateUser, updateLogin}) => {
         phoneNumber: '',
         password: '',
         confirmPassword: '',
-        isEmployer: ''
+        isEmployer: false
     });
     const [loginFormData, setLoginFormData] = useState({
         email: '',
@@ -40,11 +40,11 @@ const Loginsignup = ({updateUser, updateLogin}) => {
     
         // For radio buttons, set the value directly
         if (name === 'isEmployer') {
-            const newValue = value === 'true';
             setRegFormData(prevregFormData => ({
                 ...prevregFormData,
-                [name]: newValue
+                [name]: value
             }));
+            console.log(regFormData)
         } else {
             // For other fields, update normally
             setRegFormData(prevregFormData => ({
@@ -125,7 +125,7 @@ const Loginsignup = ({updateUser, updateLogin}) => {
                     phoneNumber: '',
                     password: '',
                     confirmPassword: '',
-                    isEmployer: ''
+                    isEmployer: false
                 });
                 if(user.message === "Successful Registration") {
                     setAction('Login');
@@ -286,8 +286,8 @@ const Loginsignup = ({updateUser, updateLogin}) => {
                                             type="radio"
                                             id="lookingForTalent"
                                             name="isEmployer"
-                                            value="true"
-                                            checked={regFormData.isEmployer === 'true'}
+                                            value={true}
+                                            // checked={regFormData.isEmployer === 'true'}
                                             onChange={handleChange}
                                             onBlur={handleBlur}
                                             className="mr-2"
@@ -299,8 +299,8 @@ const Loginsignup = ({updateUser, updateLogin}) => {
                                             type="radio"
                                             id="lookingForJob"
                                             name="isEmployer"
-                                            value="false"
-                                            checked={regFormData.isEmployer === 'false'}
+                                            value={false}
+                                            // checked={regFormData.isEmployer === 'false'}
                                             onChange={handleChange}
                                             onBlur={handleBlur}
                                             className="mr-2"

@@ -31,7 +31,7 @@ const Header = ({loggedUser, updateLogin}) => {
     <ul className="list-none">
         <li>
             <a
-                href="#"
+                href="/"
                 className="hover:text-gray-400"
                 onClick={(e) => {
                     e.preventDefault();
@@ -54,7 +54,7 @@ const Header = ({loggedUser, updateLogin}) => {
                     <div className="flex items-center space-x-4 flex-grow">
                         <PiDotsNineBold className="text-gray-900 hover:text-gray-300 cursor-pointer text-2xl" />
                         <ul className="flex space-x-4">
-                            <li><NavLink to="/home" activeclassname="text-gray-400" className="hover:text-gray-400">Home</NavLink></li>
+                            <li><NavLink to="/" activeclassname="text-gray-400" className="hover:text-gray-400">Home</NavLink></li>
                             <li>|</li>
                             <li><NavLink to="/category" activeclassname="text-gray-400" className="hover:text-gray-400">Category</NavLink></li>
                             <li>|</li>

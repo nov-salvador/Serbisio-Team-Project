@@ -140,7 +140,7 @@ const JobLists = () => {
     
     useEffect(() => {
         handleSearch();
-    });
+    },[categories, locations]);
 
     useEffect(() => {
         filterJobs(selectedCategory, selectedLocation, selectedDuration, selectedOrder);
