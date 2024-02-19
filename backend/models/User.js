@@ -31,30 +31,56 @@ const UserSchema = new mongoose.Schema({
   },
   services: {
     type: Array,
-    // default: []
+    default: []
   },
   userLocation: {
     type: String,
-    required: true,
+    default: ''
   },
   userPicture: {
-    public_id: String,
-    url: String
+    public_id: {
+      type: String
+    },
+    url: {
+      type: String,
+      default: "https://cdn-icons-png.flaticon.com/512/5987/5987424.png"
+    },
   },
-  coverPicture: {},
+  
+  coverPicture: {
+    type: String,
+    default: ''
+  },
   ratings: {
-    communication: Number,
-    punctuality: Number,
-    qualityOfWork: Number,
+    communication: {
+      type: Number,
+      default: 0
+    },
+    punctuality: {
+      type: Number,
+      default: 0
+    },
+    qualityOfWork: {
+      type: Number,
+      default: 0
+    }
   },
   isEmployer: {
     type: Boolean,
     default: false
   },
-  createdJobs: Number,
-  completedJobs: Number,
-  ratePerHour: Number,
-
+  createdJobs: {
+    type: Number,
+    default: 0
+  },
+  completedJobs: {
+    type: Number,
+    default: 0
+  },
+  ratePerHour: {
+    type: Number,
+    default: 0
+  }
 }, {timestamps: true});
 
 const User = mongoose.model("User", UserSchema);
