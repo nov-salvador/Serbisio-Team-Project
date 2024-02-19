@@ -90,8 +90,8 @@ export default function TopUser() {
                 <Slider {...settings} ref={sliderRef}>
                     {sortedUser
                     .filter(user => user.isEmployer === true)
-                    .map((user) => (
-                        <div key={user.id} className='text-center justify-center'>
+                    .map((user, index) => (
+                        <div key={index} className='text-center justify-center'>
                             <div className="text-center mx-2">
                                 <img src={user.userPicture.url} className="rounded-full object-cover h-30 w-30" />
                                 <div className="flex justify-center mt-1">
@@ -99,6 +99,7 @@ export default function TopUser() {
                                 </div>
                             </div>
                             <div className="my-2 mx-5">
+                            <p className="text-md text-center font-semibold" style={{ fontSize: "10px" }}>{user._id}</p>
                                <h2 className="font-semibold text-center text-lg">{user.firstname} {user.lastname}</h2>
                                 <p className="text-md text-center font-semibold" style={{ fontSize: "12px" }}>Php ? Total Paid</p>
                                 <p className="text-md text-center font-semibold" style={{ fontSize: "12px" }}> {user.createdJobs} jobs created</p>
