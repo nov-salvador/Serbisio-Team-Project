@@ -191,8 +191,30 @@ const Loginsignup = ({ updateUser, updateLogin, handleCloseModal }) => {
         <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
 
             <div className="bg-white rounded-lg shadow-lg lg:h-4/5 w-full lg:w-3/4 pop-container flex flex-col lg:flex-row">
-                <div className="hidden md:block lg:w-1/2 bg-white rounded-l-lg justify-center items-center overflow-hidden">
+                <div className="hidden md:block lg:w-1/2 bg-white rounded-l-lg justify-center items-center overflow-hidden relative">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Working_man-obrero_2.jpg/640px-Working_man-obrero_2.jpg" alt="Description of your image" className="object-cover w-full h-full rounded-l-lg" />
+                    <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-10">
+                        <div className="text-center text-white">
+                            <div className="text-center my-5">
+                                <a href="#" className="text-lg text-white hover:bg-orange-800 p-2 rounded-lg">Forgot Password?</a>
+                            </div>
+                            <p className="text-sm">
+                                {isRegister ? "Already have an account? " : "Don't have an account? "}
+                                <a
+                                    href="#"
+                                    className="text-blue-500 hover:bg-white p-1 rounded-lg"
+                                    onClick={() => {
+                                        if (isRegister) {
+                                            setAction("Login");
+                                        } else {
+                                            setAction("Sign Up");
+                                        }
+                                    }}>
+                                    {isRegister ? "Login!" : "Sign Up!"}
+                                </a>
+                            </p>
+                        </div>
+                    </div>
                 </div>
                 <div className="w-full lg:w-1/2 p-8 bg-white overflow-y-auto">
                     <button onClick={handleCloseModal} className="absolute top-2 right-2 text-red-600 text-2xl hover:text-gray-800 focus:outline-none">
@@ -342,36 +364,40 @@ const Loginsignup = ({ updateUser, updateLogin, handleCloseModal }) => {
                         </div>
                     </form>
                     {/* Forgot Password */}
-                    <hr className="mb-6 border-t" />
-                    <div className="text-center">
-                        <a href="#" className="text-sm text-blue-500 hover:text-blue-800">Forgot Password?</a>
-                    </div>
-                    {/* Toggle Register/Login */}
-                    <div className="text-center">
-                        <p className="mt-4 text-sm">
-                            <a
-                                href="#"
-                                className="inline-block text-sm text-gray-500 align-baseline hover:text-gray-800"
-                                onClick={() => {
-                                    if (isRegister) {
-                                        setAction("Login");
-                                    } else {
-                                        setAction("Sign Up");
-                                    }
-                                }}>
-                                {isRegister ? (
-                                    <span>
-                                        Already have an account? <span className="text-blue-500">Login!</span>
-                                    </span>
-                                ) : (
-                                    <span>
-                                        Don't have an account? <span className="text-blue-500">Sign Up!</span>
-                                    </span>
-                                )}
-                            </a>
+                    {!isRegister ? (
+                        <div>
+                            <hr className="mb-6 border-t" />
+                            <div className="text-center">
+                                <a href="#" className="text-sm text-blue-500 hover:text-blue-800">Forgot Password?</a>
+                            </div>
+                            {/* Toggle Register/Login */}
+                            <div className="text-center">
+                                <p className="mt-4 text-sm">
+                                    <a
+                                        href="#"
+                                        className="inline-block text-sm text-gray-500 align-baseline hover:text-gray-800"
+                                        onClick={() => {
+                                            if (isRegister) {
+                                                setAction("Login");
+                                            } else {
+                                                setAction("Sign Up");
+                                            }
+                                        }}>
+                                        {isRegister ? (
+                                            <span>
+                                                Already have an account? <span className="text-blue-500">Login!</span>
+                                            </span>
+                                        ) : (
+                                            <span>
+                                                Don't have an account? <span className="text-blue-500">Sign Up!</span>
+                                            </span>
+                                        )}
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                    ) : null}
 
-                        </p>
-                    </div>
                 </div>
             </div>
         </div>
