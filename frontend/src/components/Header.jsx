@@ -5,8 +5,8 @@ import { LuHeart, LuSearch, LuBell, LuUser } from "react-icons/lu";
 import { NavLink, useNavigate } from 'react-router-dom';
 import Loginsignup from './LoginSignup/LoginSignup';
 
-const Header = ({loggedUser,updateUser, updateLogin}) => {
-    function handleLogout(){
+const Header = ({ loggedUser, updateUser, updateLogin }) => {
+    function handleLogout() {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         updateLogin(false)
@@ -21,7 +21,7 @@ const Header = ({loggedUser,updateUser, updateLogin}) => {
 
     return (
         <div className=''>
-          {!getUser && showModal && (
+            {!getUser && showModal && (
                 <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
                     <Loginsignup updateUser={updateUser} updateLogin={updateLogin} handleCloseModal={handleCloseModal} />
                 </div>
@@ -29,7 +29,7 @@ const Header = ({loggedUser,updateUser, updateLogin}) => {
             {/* Top Header */}
             <header className="bg-sky-500 text-white py-2 px-12 font-light text-xs">
                 <div className="container mx-auto flex justify-between items-center">
-                    <div>Welcome {getUser ? parseUser.firstname : 'Guest'} to Serbis.io</div>
+                    <div>Welcome {getUser ? <span className='font-bold'>{parseUser.firstname}</span> : 'Guest'} to Serbis.io</div>
                     <nav>
                         <ul className="flex space-x-4">
                             <li><NavLink to="/jobs" className="hover:text-gray-400">POST JOB</NavLink></li>
@@ -43,9 +43,9 @@ const Header = ({loggedUser,updateUser, updateLogin}) => {
                         <ul className="list-none">
                             <li>
                                 <a
-                                    href="#" className="hover:text-gray-400"> {getUser ? <button type='button' onClick={handleLogout}>Logout</button> 
-                                    : <button onClick={() => setShowModal(true)}>Login/Signup</button>}
-                                    
+                                    href="#" className="hover:text-gray-400"> {getUser ? <button type='button' onClick={handleLogout}>Logout</button>
+                                        : <button onClick={() => setShowModal(true)}>Login/Signup</button>}
+
                                 </a>
                             </li>
                         </ul>
@@ -73,7 +73,7 @@ const Header = ({loggedUser,updateUser, updateLogin}) => {
                     {/* Logo Centered */}
                     <div className="flex items-center space-x-4 flex-grow">
                         <NavLink to="/">
-                        <img src={logo} alt="Logo" className="h-8" style={{ width: "50px", height: "auto" }} />
+                            <img src={logo} alt="Logo" className="h-8" style={{ width: "50px", height: "auto" }} />
                         </NavLink>
                     </div>
 
