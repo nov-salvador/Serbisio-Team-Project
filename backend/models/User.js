@@ -1,5 +1,27 @@
 import mongoose from 'mongoose';
 
+const ExperienceSchema = new mongoose.Schema({
+  jobTitle: {
+    type: String,
+    required: true
+  },
+  description: {
+    type: String,
+    required: true
+  },
+  startDate: {
+    type: Date,
+    required: true
+  },
+  endDate: {
+    type: Date
+  },
+  companyName: {
+    type: String,
+    required: true
+  }
+});
+
 const UserSchema = new mongoose.Schema({
   firstname: {
     type: String,
@@ -46,11 +68,11 @@ const UserSchema = new mongoose.Schema({
       default: "https://cdn-icons-png.flaticon.com/512/5987/5987424.png"
     },
   },
-  
   coverPicture: {
     type: String,
     default: ''
   },
+  experiences: [ExperienceSchema],
   ratings: {
     communication: {
       type: Number,
