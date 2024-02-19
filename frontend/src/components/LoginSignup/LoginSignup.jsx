@@ -44,7 +44,6 @@ const Loginsignup = ({updateUser, updateLogin}) => {
                 ...prevregFormData,
                 [name]: value
             }));
-            console.log(regFormData)
         } else {
             // For other fields, update normally
             setRegFormData(prevregFormData => ({

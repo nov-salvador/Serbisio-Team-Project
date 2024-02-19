@@ -2,13 +2,15 @@ import React, { useEffect, useState } from 'react';
 import logo from '../assets/serbisyo-logo.png';
 import { PiDotsNineBold } from "react-icons/pi";
 import { LuHeart, LuSearch, LuBell, LuUser } from "react-icons/lu";
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, Navigate } from 'react-router-dom';
 
 const Header = ({loggedUser, updateLogin}) => {
+    const navigate = useNavigate()
     function handleLogout(){
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         updateLogin(false)
+        navigate('/')
     }
     const getUser = localStorage.getItem('user')
     const parseUser = JSON.parse(getUser)
@@ -33,12 +35,8 @@ const Header = ({loggedUser, updateLogin}) => {
             <a
                 href="/"
                 className="hover:text-gray-400"
-                onClick={(e) => {
-                    e.preventDefault();
-                    handleLogin();
-                }}
             >
-                {getUser ? <button type='button' onClick={handleLogout}>Logout</button> : 'LOGIN | SIGNUP'}
+                <button type='button' onClick={handleLogout}> {getUser ? "Logout" : 'LOGIN | SIGNUP'}</button>
             </a>
         </li>
     </ul>

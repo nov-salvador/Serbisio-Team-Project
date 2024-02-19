@@ -90,8 +90,8 @@ export default function TopUser() {
                 <Slider {...settings} ref={sliderRef}>
                     {sortedUser
                     .filter(user => user.isEmployer === true)
-                    .map((user) => (
-                        <div key={user.id} className='text-center justify-center'>
+                    .map((user, index) => (
+                        <div key={index} className='text-center justify-center'>
                             <div className="text-center mx-2">
                                 <img src={user.userPicture.url} className="rounded-full object-cover h-30 w-30" />
                                 <div className="flex justify-center mt-1">
