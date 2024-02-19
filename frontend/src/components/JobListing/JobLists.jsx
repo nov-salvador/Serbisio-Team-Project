@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router';
+import JobForm from './JobForm';
+import CreateJob from './CreateJob';
 
 const JobListTable = ({ filteredJobs }) => {
     const formatDate = (postedDate) => {
@@ -82,9 +84,13 @@ const JobListTable = ({ filteredJobs }) => {
                         <td className="px-6 py-4 whitespace-wrap">
                             <div className="text-sm text-gray-900">{job.status}</div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap  text-sm font-medium">
-                            <a href="#" className="text-indigo-600 hover:text-indigo-900">Details</a>
-                            <a href="#" className="ml-2 text-red-600 hover:text-red-900">Apply</a>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <div>
+                                <a href="#" className="text-indigo-600 hover:text-indigo-900">Details</a>
+                            </div>
+                            <div className='pt-2'>
+                                <a href="#" className="text-red-600 hover:text-red-900">Apply Job</a>
+                            </div>
                         </td>
                     </tr>
                 ))}
@@ -137,10 +143,10 @@ const JobLists = () => {
     useEffect(() => {
         filterJobs(selectedCategory, selectedLocation, selectedDuration, selectedOrder);
     }, [selectedCategory, selectedLocation, selectedDuration, selectedOrder]);
-    
+
     useEffect(() => {
         handleSearch();
-    });
+    }, [categories, locations]);
 
     useEffect(() => {
         filterJobs(selectedCategory, selectedLocation, selectedDuration, selectedOrder);
@@ -175,7 +181,7 @@ const JobLists = () => {
                 break;
         }
     };
-    
+
     const filterJobs = async (category, location, duration, order) => {
         return new Promise((resolve, reject) => {
             let filtered = jobs.filter(job => {
@@ -224,6 +230,11 @@ const JobLists = () => {
         return duration;
     };
 
+    const [isJobFormOpen, setIsJobFormOpen] = useState(false);
+    const handleCreateJob = () => {
+        setIsJobFormOpen(true);
+    };
+
     return (
         <div className="mx-auto flex flex-col justify-center my-10">
             <div className="flex mb-10">
@@ -266,11 +277,7 @@ const JobLists = () => {
                         <option value="dateDescending">Date (Descending)</option>
                     </select>
                 </div>
-                <div className="mx-4">
-                    {/* <button onClick={handleSearch} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded">
-                    Search
-                </button> */}
-                </div>
+                <CreateJob />
             </div>
             <JobListTable filteredJobs={filteredJobs} />
         </div>

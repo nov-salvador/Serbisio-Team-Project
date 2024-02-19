@@ -13,7 +13,8 @@ export async function registerUser(req, res){
       email, 
       phoneNumber, 
       services, 
-      userLocation,  
+      userLocation,
+      isEmployer  
     } = req.body
 
     // const result = await cloudinary.uploader.upload(req.file.path,)
@@ -30,7 +31,7 @@ export async function registerUser(req, res){
       phoneNumber, 
       services, 
       userLocation,
-  
+      isEmployer
     })
 
     const savedUser = await newUser.save();

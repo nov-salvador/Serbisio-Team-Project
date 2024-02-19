@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import Jobs from '../JobListing/Jobs';
 import Category from './Category';
 import TopBanner from './TopBanner';
@@ -8,14 +8,22 @@ import TopClients from './TopEmployers';
 import NewsLetter from '../NewsLetter';
 import Loginsignup from '../LoginSignup/LoginSignup';
 
+export default function HomePage({ login, updateUser, updateLogin }) {
+    const [showModal, setShowModal] = useState(true);
 
-export default function HomePage({login, updateUser, updateLogin}) {
-    
+    const handleCloseModal = () => {
+        setShowModal(false);
+    };
+
     return (
         <div className=''>
-            {!login && <Loginsignup updateUser={updateUser} updateLogin={updateLogin}/>}
+            {!login && showModal && (
+                <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
+                    <Loginsignup updateUser={updateUser} updateLogin={updateLogin} handleCloseModal={handleCloseModal} />
+                </div>
+            )}
             <div className="w-11/12 mx-auto">
-            <TopBanner />
+                <TopBanner />
             </div>
             <div className="max-w-5xl mx-auto">
                 <Category />

@@ -1,13 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Form, useNavigate } from "react-router-dom";
-import * as yup from 'yup'
+import * as yup from 'yup';
+import { IoMdCloseCircle } from "react-icons/io";
 
 
-const Loginsignup = ({updateUser, updateLogin}) => {
+const Loginsignup = ({ updateUser, updateLogin, handleCloseModal }) => {
 
     const navigate = useNavigate();
     const [action, setAction] = useState("Sign Up");
-    const isLogin = action === "Login";
+    const isLogin = action === "Login"
     const isRegister = action === "Sign Up";
 
     const registerSchema = yup.object().shape({
@@ -26,7 +27,7 @@ const Loginsignup = ({updateUser, updateLogin}) => {
         phoneNumber: '',
         password: '',
         confirmPassword: '',
-        isEmployer: ''
+        isEmployer: false
     });
     const [loginFormData, setLoginFormData] = useState({
         email: '',
@@ -37,14 +38,14 @@ const Loginsignup = ({updateUser, updateLogin}) => {
 
     const handleChange = (event) => {
         const { name, value } = event.target;
-    
+
         // For radio buttons, set the value directly
         if (name === 'isEmployer') {
-            const newValue = value === 'true';
             setRegFormData(prevregFormData => ({
                 ...prevregFormData,
-                [name]: newValue
+                [name]: value
             }));
+            console.log(regFormData)
         } else {
             // For other fields, update normally
             setRegFormData(prevregFormData => ({
@@ -97,6 +98,21 @@ const Loginsignup = ({updateUser, updateLogin}) => {
         }
     };
 
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (!event.target.closest('.pop-container')) {
+                handleCloseModal();
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [handleCloseModal]);
+
+
     async function handleSubmit(event) {
         event.preventDefault();
         console.log(regFormData);
@@ -116,7 +132,7 @@ const Loginsignup = ({updateUser, updateLogin}) => {
                     body: JSON.stringify(regFormData)
                 });
                 const user = await response.json();
-                
+
                 console.log('This is the response:', user);
                 setRegFormData({
                     firstname: '',
@@ -125,14 +141,14 @@ const Loginsignup = ({updateUser, updateLogin}) => {
                     phoneNumber: '',
                     password: '',
                     confirmPassword: '',
-                    isEmployer: ''
+                    isEmployer: false
                 });
-                if(user.message === "Successful Registration") {
+                if (user.message === "Successful Registration") {
                     setAction('Login');
                 } else {
                     alert(`Please try again, ${user.message}`);
                 }
-                
+
             } catch (error) {
                 console.error('Error:', error);
             }
@@ -153,12 +169,12 @@ const Loginsignup = ({updateUser, updateLogin}) => {
                     body: JSON.stringify(loginFormData)
                 });
                 const user = await response.json();
-                if(user.message === "Successful login"){
+                if (user.message === "Successful login") {
                     localStorage.setItem('token', user.token)
                     localStorage.setItem('user', JSON.stringify(user.user))
                     updateLogin(true)
                     navigate("/");
-                }else{ alert(user.message)}
+                } else { alert(user.message) }
                 console.log('This is the reponse:', user);
                 setLoginFormData({
                     email: '',
@@ -170,14 +186,40 @@ const Loginsignup = ({updateUser, updateLogin}) => {
         }
 
     }
-    
+
     return (
         <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
-        <div className="bg-white rounded-lg shadow-lg lg:h-4/5 w-full lg:w-3/4 pop-container flex flex-col lg:flex-row">
-            <div className="hidden md:block lg:w-1/2 bg-white rounded-l-lg justify-center items-center overflow-hidden">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Working_man-obrero_2.jpg/640px-Working_man-obrero_2.jpg" alt="Description of your image" className="object-cover w-full h-full rounded-l-lg" />
-            </div>
-            <div className="w-full lg:w-1/2 p-8 bg-white overflow-y-auto">
+
+            <div className="bg-white rounded-lg shadow-lg lg:h-4/5 w-full lg:w-3/4 pop-container flex flex-col lg:flex-row">
+                <div className="hidden md:block lg:w-1/2 bg-white rounded-l-lg justify-center items-center overflow-hidden relative">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Working_man-obrero_2.jpg/640px-Working_man-obrero_2.jpg" alt="Description of your image" className="object-cover w-full h-full rounded-l-lg" />
+                    <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-10">
+                        <div className="text-center text-white">
+                            <div className="text-center my-5">
+                                <a href="#" className="text-lg text-white hover:bg-orange-800 p-2 rounded-lg">Forgot Password?</a>
+                            </div>
+                            <p className="text-sm">
+                                {isRegister ? "Already have an account? " : "Don't have an account? "}
+                                <a
+                                    href="#"
+                                    className="text-blue-500 hover:bg-white p-1 rounded-lg"
+                                    onClick={() => {
+                                        if (isRegister) {
+                                            setAction("Login");
+                                        } else {
+                                            setAction("Sign Up");
+                                        }
+                                    }}>
+                                    {isRegister ? "Login!" : "Sign Up!"}
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div className="w-full lg:w-1/2 p-8 bg-white overflow-y-auto">
+                    <button onClick={handleCloseModal} className="absolute top-2 right-2 text-red-600 text-2xl hover:text-gray-800 focus:outline-none">
+                        <IoMdCloseCircle />
+                    </button>
                     <h3 className="text-2xl font-bold text-gray-800 text-center mb-6">{isRegister ? "Create an Account!" : "Login"}</h3>
                     <form onSubmit={handleSubmit}>
                         {/* First Name and Last Name */}
@@ -276,7 +318,7 @@ const Loginsignup = ({updateUser, updateLogin}) => {
                                 {isPassMatched === false && <p className="error-validity text-red-500 text-xs mt-1">Passwords do not match</p>}
                             </div>
                         )}
-                          {/* User Type (Looking for Talent / Looking for Job) */}
+                        {/* User Type (Looking for Talent / Looking for Job) */}
                         {isRegister && (
                             <div className="mb-6">
                                 <label className="block text-sm font-bold text-center text-gray-700">What are you looking for?</label>
@@ -286,8 +328,8 @@ const Loginsignup = ({updateUser, updateLogin}) => {
                                             type="radio"
                                             id="lookingForTalent"
                                             name="isEmployer"
-                                            value="true"
-                                            checked={regFormData.isEmployer === 'true'}
+                                            value={true}
+                                            // checked={regFormData.isEmployer === 'true'}
                                             onChange={handleChange}
                                             onBlur={handleBlur}
                                             className="mr-2"
@@ -299,8 +341,8 @@ const Loginsignup = ({updateUser, updateLogin}) => {
                                             type="radio"
                                             id="lookingForJob"
                                             name="isEmployer"
-                                            value="false"
-                                            checked={regFormData.isEmployer === 'false'}
+                                            value={false}
+                                            // checked={regFormData.isEmployer === 'false'}
                                             onChange={handleChange}
                                             onBlur={handleBlur}
                                             className="mr-2"
@@ -322,36 +364,40 @@ const Loginsignup = ({updateUser, updateLogin}) => {
                         </div>
                     </form>
                     {/* Forgot Password */}
-                    <hr className="mb-6 border-t" />
-                    <div className="text-center">
-                        <a href="#" className="text-sm text-blue-500 hover:text-blue-800">Forgot Password?</a>
-                    </div>
-                    {/* Toggle Register/Login */}
-                    <div className="text-center">
-                        <p className="mt-4 text-sm">
-                            <a
-                                href="#"
-                                className="inline-block text-sm text-gray-500 align-baseline hover:text-gray-800"
-                                onClick={() => {
-                                    if (isRegister) {
-                                        setAction("Login");
-                                    } else {
-                                        setAction("Sign Up");
-                                    }
-                                }}>
-                                {isRegister ? (
-                                    <span>
-                                        Already have an account? <span className="text-blue-500">Login!</span>
-                                    </span>
-                                ) : (
-                                    <span>
-                                        Don't have an account? <span className="text-blue-500">Sign Up!</span>
-                                    </span>
-                                )}
-                            </a>
+                    {!isRegister ? (
+                        <div>
+                            <hr className="mb-6 border-t" />
+                            <div className="text-center">
+                                <a href="#" className="text-sm text-blue-500 hover:text-blue-800">Forgot Password?</a>
+                            </div>
+                            {/* Toggle Register/Login */}
+                            <div className="text-center">
+                                <p className="mt-4 text-sm">
+                                    <a
+                                        href="#"
+                                        className="inline-block text-sm text-gray-500 align-baseline hover:text-gray-800"
+                                        onClick={() => {
+                                            if (isRegister) {
+                                                setAction("Login");
+                                            } else {
+                                                setAction("Sign Up");
+                                            }
+                                        }}>
+                                        {isRegister ? (
+                                            <span>
+                                                Already have an account? <span className="text-blue-500">Login!</span>
+                                            </span>
+                                        ) : (
+                                            <span>
+                                                Don't have an account? <span className="text-blue-500">Sign Up!</span>
+                                            </span>
+                                        )}
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                    ) : null}
 
-                        </p>
-                    </div>
                 </div>
             </div>
         </div>

@@ -48,7 +48,11 @@ const jobsSchema = new mongoose.Schema({
   },
   location: {
     type: String,
-  }
+  },
+  completedBy: {
+    type: String,
+    default: null,
+  },
 },{timestamps: true});
 
 const JobsModel = mongoose.model('jobs', jobsSchema);
