@@ -1,13 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Form, useNavigate } from "react-router-dom";
-import * as yup from 'yup'
+import * as yup from 'yup';
+import { IoMdCloseCircle } from "react-icons/io";
 
 
-const Loginsignup = ({updateUser, updateLogin}) => {
+const Loginsignup = ({ updateUser, updateLogin, handleCloseModal }) => {
 
     const navigate = useNavigate();
     const [action, setAction] = useState("Sign Up");
-    const isLogin = action === "Login";
+    const isLogin = action === "Login"
     const isRegister = action === "Sign Up";
 
     const registerSchema = yup.object().shape({
@@ -37,7 +38,7 @@ const Loginsignup = ({updateUser, updateLogin}) => {
 
     const handleChange = (event) => {
         const { name, value } = event.target;
-    
+
         // For radio buttons, set the value directly
         if (name === 'isEmployer') {
             setRegFormData(prevregFormData => ({
@@ -97,6 +98,21 @@ const Loginsignup = ({updateUser, updateLogin}) => {
         }
     };
 
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (!event.target.closest('.pop-container')) {
+                handleCloseModal();
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [handleCloseModal]);
+
+
     async function handleSubmit(event) {
         event.preventDefault();
         console.log(regFormData);
@@ -116,7 +132,7 @@ const Loginsignup = ({updateUser, updateLogin}) => {
                     body: JSON.stringify(regFormData)
                 });
                 const user = await response.json();
-                
+
                 console.log('This is the response:', user);
                 setRegFormData({
                     firstname: '',
@@ -127,12 +143,12 @@ const Loginsignup = ({updateUser, updateLogin}) => {
                     confirmPassword: '',
                     isEmployer: false
                 });
-                if(user.message === "Successful Registration") {
+                if (user.message === "Successful Registration") {
                     setAction('Login');
                 } else {
                     alert(`Please try again, ${user.message}`);
                 }
-                
+
             } catch (error) {
                 console.error('Error:', error);
             }
@@ -153,12 +169,12 @@ const Loginsignup = ({updateUser, updateLogin}) => {
                     body: JSON.stringify(loginFormData)
                 });
                 const user = await response.json();
-                if(user.message === "Successful login"){
+                if (user.message === "Successful login") {
                     localStorage.setItem('token', user.token)
                     localStorage.setItem('user', JSON.stringify(user.user))
                     updateLogin(true)
                     navigate("/");
-                }else{ alert(user.message)}
+                } else { alert(user.message) }
                 console.log('This is the reponse:', user);
                 setLoginFormData({
                     email: '',
@@ -170,14 +186,18 @@ const Loginsignup = ({updateUser, updateLogin}) => {
         }
 
     }
-    
+
     return (
         <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
-        <div className="bg-white rounded-lg shadow-lg lg:h-4/5 w-full lg:w-3/4 pop-container flex flex-col lg:flex-row">
-            <div className="hidden md:block lg:w-1/2 bg-white rounded-l-lg justify-center items-center overflow-hidden">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Working_man-obrero_2.jpg/640px-Working_man-obrero_2.jpg" alt="Description of your image" className="object-cover w-full h-full rounded-l-lg" />
-            </div>
-            <div className="w-full lg:w-1/2 p-8 bg-white overflow-y-auto">
+
+            <div className="bg-white rounded-lg shadow-lg lg:h-4/5 w-full lg:w-3/4 pop-container flex flex-col lg:flex-row">
+                <div className="hidden md:block lg:w-1/2 bg-white rounded-l-lg justify-center items-center overflow-hidden">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Working_man-obrero_2.jpg/640px-Working_man-obrero_2.jpg" alt="Description of your image" className="object-cover w-full h-full rounded-l-lg" />
+                </div>
+                <div className="w-full lg:w-1/2 p-8 bg-white overflow-y-auto">
+                    <button onClick={handleCloseModal} className="absolute top-2 right-2 text-red-600 text-2xl hover:text-gray-800 focus:outline-none">
+                        <IoMdCloseCircle />
+                    </button>
                     <h3 className="text-2xl font-bold text-gray-800 text-center mb-6">{isRegister ? "Create an Account!" : "Login"}</h3>
                     <form onSubmit={handleSubmit}>
                         {/* First Name and Last Name */}
@@ -276,7 +296,7 @@ const Loginsignup = ({updateUser, updateLogin}) => {
                                 {isPassMatched === false && <p className="error-validity text-red-500 text-xs mt-1">Passwords do not match</p>}
                             </div>
                         )}
-                          {/* User Type (Looking for Talent / Looking for Job) */}
+                        {/* User Type (Looking for Talent / Looking for Job) */}
                         {isRegister && (
                             <div className="mb-6">
                                 <label className="block text-sm font-bold text-center text-gray-700">What are you looking for?</label>

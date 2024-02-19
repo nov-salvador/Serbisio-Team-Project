@@ -3,8 +3,9 @@ import logo from '../assets/serbisyo-logo.png';
 import { PiDotsNineBold } from "react-icons/pi";
 import { LuHeart, LuSearch, LuBell, LuUser } from "react-icons/lu";
 import { NavLink, useNavigate } from 'react-router-dom';
+import Loginsignup from './LoginSignup/LoginSignup';
 
-const Header = ({loggedUser, updateLogin}) => {
+const Header = ({loggedUser,updateUser, updateLogin}) => {
     function handleLogout(){
         localStorage.removeItem('token');
         localStorage.removeItem('user');
@@ -12,8 +13,19 @@ const Header = ({loggedUser, updateLogin}) => {
     }
     const getUser = localStorage.getItem('user')
     const parseUser = JSON.parse(getUser)
+
+    const [showModal, setShowModal] = useState(false);
+    const handleCloseModal = () => {
+        setShowModal(false);
+    };
+
     return (
         <div className=''>
+          {!getUser && showModal && (
+                <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
+                    <Loginsignup updateUser={updateUser} updateLogin={updateLogin} handleCloseModal={handleCloseModal} />
+                </div>
+            )}
             {/* Top Header */}
             <header className="bg-sky-500 text-white py-2 px-12 font-light text-xs">
                 <div className="container mx-auto flex justify-between items-center">
@@ -28,22 +40,16 @@ const Header = ({loggedUser, updateLogin}) => {
                         </ul>
                     </nav>
                     <nav>
-    <ul className="list-none">
-        <li>
-            <a
-                href="/"
-                className="hover:text-gray-400"
-                onClick={(e) => {
-                    e.preventDefault();
-                    handleLogin();
-                }}
-            >
-                {getUser ? <button type='button' onClick={handleLogout}>Logout</button> : 'LOGIN | SIGNUP'}
-            </a>
-        </li>
-    </ul>
-</nav>
-
+                        <ul className="list-none">
+                            <li>
+                                <a
+                                    href="#" className="hover:text-gray-400"> {getUser ? <button type='button' onClick={handleLogout}>Logout</button> 
+                                    : <button onClick={() => setShowModal(true)}>Login/Signup</button>}
+                                    
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
             </header>
 
@@ -73,7 +79,7 @@ const Header = ({loggedUser, updateLogin}) => {
 
                     {/* User Icons */}
                     <div className="flex space-x-4 flex-grow justify-end">
-                        {/* {user && user.firstname ? (
+                        {/* {getUser ? (
                             <LuUser className="text-gray-900 hover:text-gray-300 cursor-pointer" />
                         ) : (
                             <Loginsignup action={action} updateLogin={handleLogin} updateSignup={handleSignup} />
