@@ -28,11 +28,22 @@ const Header = ({loggedUser, updateLogin}) => {
                         </ul>
                     </nav>
                     <nav>
-                        <ul className="flex space-x-4">
-                            <li><a href="#" className="hover:text-gray-400">{getUser ? `Contact: +63 ${parseUser.phoneNumber}`: 'Contact: +63xxxxxxxxxx'}</a></li>
-                        </ul>
-                    </nav>
-                    <button type='button' onClick={handleLogout}>Logout</button>
+    <ul className="list-none">
+        <li>
+            <a
+                href="#"
+                className="hover:text-gray-400"
+                onClick={(e) => {
+                    e.preventDefault();
+                    handleLogin();
+                }}
+            >
+                {getUser ? <button type='button' onClick={handleLogout}>Logout</button> : 'LOGIN | SIGNUP'}
+            </a>
+        </li>
+    </ul>
+</nav>
+
                 </div>
             </header>
 
@@ -62,7 +73,11 @@ const Header = ({loggedUser, updateLogin}) => {
 
                     {/* User Icons */}
                     <div className="flex space-x-4 flex-grow justify-end">
-                        <LuUser className="text-gray-900 hover:text-gray-300 cursor-pointer" />
+                        {/* {user && user.firstname ? (
+                            <LuUser className="text-gray-900 hover:text-gray-300 cursor-pointer" />
+                        ) : (
+                            <Loginsignup action={action} updateLogin={handleLogin} updateSignup={handleSignup} />
+                        )} */}
                         <LuSearch className="text-gray-900 hover:text-gray-300 cursor-pointer" />
                         <LuHeart className="text-gray-900 hover:text-gray-300 cursor-pointer" />
                         <LuBell className="text-gray-900 hover:text-gray-300 cursor-pointer" />
