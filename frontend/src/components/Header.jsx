@@ -4,8 +4,8 @@ import { PiDotsNineBold } from "react-icons/pi";
 import { LuHeart, LuSearch, LuBell, LuUser } from "react-icons/lu";
 import { NavLink, useNavigate } from 'react-router-dom';
 
-const Header = ({ loggedUser, updateLogin }) => {
-    function handleLogout() {
+const Header = ({loggedUser, updateLogin}) => {
+    function handleLogout(){
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         updateLogin(false)
@@ -28,21 +28,22 @@ const Header = ({ loggedUser, updateLogin }) => {
                         </ul>
                     </nav>
                     <nav>
-                        <ul className="list-none">
-                            <li>
-                                <a
-                                    href="#"
-                                    className="hover:text-gray-400"
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        handleLogin();
-                                    }}
-                                >
-                                    {getUser ? <button type='button' onClick={handleLogout}>Logout</button> : 'LOGIN | SIGNUP'}
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
+    <ul className="list-none">
+        <li>
+            <a
+                href="/"
+                className="hover:text-gray-400"
+                onClick={(e) => {
+                    e.preventDefault();
+                    handleLogin();
+                }}
+            >
+                {getUser ? <button type='button' onClick={handleLogout}>Logout</button> : 'LOGIN | SIGNUP'}
+            </a>
+        </li>
+    </ul>
+</nav>
+
                 </div>
             </header>
 
@@ -66,7 +67,7 @@ const Header = ({ loggedUser, updateLogin }) => {
                     {/* Logo Centered */}
                     <div className="flex items-center space-x-4 flex-grow">
                         <NavLink to="/">
-                            <img src={logo} alt="Logo" className="h-8" style={{ width: "50px", height: "auto" }} />
+                        <img src={logo} alt="Logo" className="h-8" style={{ width: "50px", height: "auto" }} />
                         </NavLink>
                     </div>
 
