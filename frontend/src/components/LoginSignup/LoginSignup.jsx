@@ -232,7 +232,7 @@ const Loginsignup = ({ updateUser, updateLogin, handleCloseModal }) => {
                     <div className="bg-white z-50">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Working_man-obrero_2.jpg/640px-Working_man-obrero_2.jpg" alt="Description of your image" className="pl-5 object-cover w-full h-full rounded-l-lg bg-white" />
                     </div>
-                    <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-10">
+                    <div className="absolute top-0 left-5 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-10">
                         {(isResetPassword || isRegister) && (
                             <div className="text-center text-white">
                                 <div className="text-center my-5">
