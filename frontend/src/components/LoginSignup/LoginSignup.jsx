@@ -258,7 +258,7 @@ const Loginsignup = () => {
                         )}
                     </div>
                 </div>
-                <div className="w-full p-8 bg-white overflow-y-auto  relative lg:w-1/2">
+                <div className="w-full p-8 bg-white overflow-y-auto  relative lg:w-1/2 h-full">
                     <h3 className="text-2xl font-bold text-gray-800 text-center mb-6">{isRegister ? "Create an Account!" : isResetPassword ? "Reset Password" : "Login"}</h3>
                     <form onSubmit={handleSubmit}>
                         {/* First Name and Last Name */}
