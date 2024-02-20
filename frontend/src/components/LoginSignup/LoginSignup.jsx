@@ -225,6 +225,9 @@ const Loginsignup = ({ updateUser, updateLogin, handleCloseModal }) => {
     return (
         <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
             <div className="bg-white rounded-lg shadow-lg lg:h-4/5 w-full lg:w-3/4 pop-container flex flex-col lg:flex-row justify-center items-center overflow-hidden relative">
+            <button onClick={handleCloseModal} className="absolute top-2 right-2 text-red-600 text-2xl hover:text-gray-800 focus:outline-none z-50">
+                    <IoMdCloseCircle />
+                </button>
                 <div className="hidden md:block w-full lg:w-2/4 bg-white rounded-l-lg justify-center items-center overflow-hidden relative">
                     <div className="bg-white z-50">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Working_man-obrero_2.jpg/640px-Working_man-obrero_2.jpg" alt="Description of your image" className="object-cover w-full h-full rounded-l-lg bg-white" />
@@ -255,9 +258,6 @@ const Loginsignup = ({ updateUser, updateLogin, handleCloseModal }) => {
                     </div>
                 </div>
                 <div className="w-full p-8 bg-white overflow-y-auto  relative lg:w-1/2">
-                <button onClick={handleCloseModal} className="absolute top-2 right-2 text-red-600 text-2xl hover:text-gray-800 focus:outline-none">
-                    <IoMdCloseCircle />
-                </button>
                     <h3 className="text-2xl font-bold text-gray-800 text-center mb-6">{isRegister ? "Create an Account!" : isResetPassword ? "Reset Password" : "Login"}</h3>
                     <form onSubmit={handleSubmit}>
                         {/* First Name and Last Name */}
