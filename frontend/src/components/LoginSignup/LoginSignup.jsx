@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Form, useNavigate } from "react-router-dom";
 import * as yup from 'yup';
 import { IoMdCloseCircle } from "react-icons/io";
-
+import Swal from 'sweetalert2';
 
 const Loginsignup = ({ updateUser, updateLogin, handleCloseModal }) => {
 
@@ -10,6 +10,7 @@ const Loginsignup = ({ updateUser, updateLogin, handleCloseModal }) => {
     const [action, setAction] = useState("Sign Up");
     const isLogin = action === "Login"
     const isRegister = action === "Sign Up";
+    const isResetPassword = action === "ResetPassword";
 
     const registerSchema = yup.object().shape({
         firstname: yup.string().required("First name is required"),
@@ -32,6 +33,9 @@ const Loginsignup = ({ updateUser, updateLogin, handleCloseModal }) => {
     const [loginFormData, setLoginFormData] = useState({
         email: '',
         password: '',
+    });
+    const [resetPasswordFormData, setResetPasswordFormData] = useState({
+        email: '',
     });
     const [errors, setErrors] = useState({});
     const [isPassMatched, setIsPassMatched] = useState(true);
@@ -119,7 +123,11 @@ const Loginsignup = ({ updateUser, updateLogin, handleCloseModal }) => {
         if (action === "Sign Up") {
             for (const key in regFormData) {
                 if (typeof regFormData[key] === 'string' && regFormData[key].trim() === '') {
-                    alert('Please fill in all fields.');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Please fill in all fields!',
+                    });
                     return;
                 }
             }
@@ -132,21 +140,21 @@ const Loginsignup = ({ updateUser, updateLogin, handleCloseModal }) => {
                     body: JSON.stringify(regFormData)
                 });
                 const user = await response.json();
-
-                console.log('This is the response:', user);
-                setRegFormData({
-                    firstname: '',
-                    lastname: '',
-                    email: '',
-                    phoneNumber: '',
-                    password: '',
-                    confirmPassword: '',
-                    isEmployer: false
-                });
+                // console.log('This is the response:', user);
                 if (user.message === "Successful Registration") {
                     setAction('Login');
+                } else if (user.message.includes('duplicate key error')) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Email already exists!',
+                    });
                 } else {
-                    alert(`Please try again, ${user.message}`);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: `Please try again, ${user.message}`,
+                    });
                 }
 
             } catch (error) {
@@ -156,7 +164,11 @@ const Loginsignup = ({ updateUser, updateLogin, handleCloseModal }) => {
         if (action === "Login") {
             for (const key in loginFormData) {
                 if (loginFormData[key].trim() === '') {
-                    alert('Please fill in all fields.');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Please Fill in all the Fields!',
+                    });
                     return;
                 }
             }
@@ -185,42 +197,68 @@ const Loginsignup = ({ updateUser, updateLogin, handleCloseModal }) => {
             }
         }
 
+        if (action === "ResetPassword") {
+            try {
+                const response = await fetch('http://localhost:3000/auth/reset-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json' 
+                    },
+                    body: JSON.stringify(resetPasswordFormData)
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    // Reset password success
+                    alert('Password reset successful.');
+                    setAction('Login');
+                } else {
+                    // Reset password failed
+                    alert(`Password reset failed: ${result.message}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
     }
 
     return (
         <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
-
-            <div className="bg-white rounded-lg shadow-lg lg:h-4/5 w-full lg:w-3/4 pop-container flex flex-col lg:flex-row">
+            <div className="bg-white rounded-lg shadow-lg lg:h-4/5 w-full lg:w-3/4 pop-container flex flex-col lg:flex-row justify-center items-center relative">
+                <button onClick={handleCloseModal} className="absolute top-2 right-2 text-red-600 text-2xl hover:text-gray-800 focus:outline-none">
+                    <IoMdCloseCircle />
+                </button>
                 <div className="hidden md:block lg:w-1/2 bg-white rounded-l-lg justify-center items-center overflow-hidden relative">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Working_man-obrero_2.jpg/640px-Working_man-obrero_2.jpg" alt="Description of your image" className="object-cover w-full h-full rounded-l-lg" />
+                    <div className="bg-white z-50">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Working_man-obrero_2.jpg/640px-Working_man-obrero_2.jpg" alt="Description of your image" className="pl-5 object-cover w-full h-full rounded-l-lg bg-white" />
+                    </div>
                     <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-10">
-                        <div className="text-center text-white">
-                            <div className="text-center my-5">
-                                <a href="#" className="text-lg text-white hover:bg-orange-800 p-2 rounded-lg">Forgot Password?</a>
+                        {(isResetPassword || isRegister) && (
+                            <div className="text-center text-white">
+                                <div className="text-center my-5">
+                                    <a href="#" className="text-lg text-white hover:bg-orange-800 p-2 rounded-lg" onClick={() => setAction("ResetPassword")}>Forgot Password?</a>
+                                </div>
+                                <p className="text-sm">
+                                    {isRegister && !isResetPassword ? "Already have an account? " : "Don't have an account? "}
+                                    <a
+                                        href="#"
+                                        className="text-blue-500 hover:bg-white p-1 rounded-lg"
+                                        onClick={() => {
+                                            if (isRegister) {
+                                                setAction("Login");
+                                            } else {
+                                                setAction("Sign Up");
+                                            }
+                                        }}>
+                                        {isRegister ? "Login!" : "Sign Up!"}
+                                    </a>
+                                </p>
                             </div>
-                            <p className="text-sm">
-                                {isRegister ? "Already have an account? " : "Don't have an account? "}
-                                <a
-                                    href="#"
-                                    className="text-blue-500 hover:bg-white p-1 rounded-lg"
-                                    onClick={() => {
-                                        if (isRegister) {
-                                            setAction("Login");
-                                        } else {
-                                            setAction("Sign Up");
-                                        }
-                                    }}>
-                                    {isRegister ? "Login!" : "Sign Up!"}
-                                </a>
-                            </p>
-                        </div>
+                        )}
                     </div>
                 </div>
-                <div className="w-full lg:w-1/2 p-8 bg-white overflow-y-auto">
-                    <button onClick={handleCloseModal} className="absolute top-2 right-2 text-red-600 text-2xl hover:text-gray-800 focus:outline-none">
-                        <IoMdCloseCircle />
-                    </button>
-                    <h3 className="text-2xl font-bold text-gray-800 text-center mb-6">{isRegister ? "Create an Account!" : "Login"}</h3>
+                <div className="w-full lg:w-1/2 p-8 bg-white overflow-y-auto relative">
+                    <h3 className="text-2xl font-bold text-gray-800 text-center mb-6">{isRegister ? "Create an Account!" : isResetPassword ? "Reset Password" : "Login"}</h3>
                     <form onSubmit={handleSubmit}>
                         {/* First Name and Last Name */}
                         {isRegister && (
@@ -256,20 +294,22 @@ const Loginsignup = ({ updateUser, updateLogin, handleCloseModal }) => {
                             </div>
                         )}
                         {/* Email */}
-                        <div className="mb-4">
-                            <label htmlFor="email" className="block text-sm font-bold text-gray-700">Email</label>
-                            <input
-                                type="email"
-                                id="email"
-                                name="email"
-                                value={isRegister ? regFormData.email : loginFormData.email}
-                                onChange={isRegister ? handleChange : handleLoginChange}
-                                onBlur={handleBlur}
-                                className="w-full px-3 py-2 mt-1 text-sm border rounded-md focus:outline-none focus:border-blue-500"
-                                placeholder="Enter your email"
-                            />
-                            {errors.email && <p className="error-validity text-red-500 text-xs mt-1">{errors.email}</p>}
-                        </div>
+                        {!isResetPassword && (
+                            <div className="mb-4">
+                                <label htmlFor="email" className="block text-sm font-bold text-gray-700">Email</label>
+                                <input
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    value={isRegister ? regFormData.email : isResetPassword ? resetPasswordFormData.email : loginFormData.email}
+                                    onChange={isRegister ? handleChange : handleLoginChange}
+                                    onBlur={handleBlur}
+                                    className="w-full px-3 py-2 mt-1 text-sm border rounded-md focus:outline-none focus:border-blue-500"
+                                    placeholder="Enter your email"
+                                />
+                                {errors.email && <p className="error-validity text-red-500 text-xs mt-1">{errors.email}</p>}
+                            </div>
+                        )}
                         {/* Phone Number */}
                         {isRegister && (
                             <div className="mb-4">
@@ -288,19 +328,21 @@ const Loginsignup = ({ updateUser, updateLogin, handleCloseModal }) => {
                             </div>
                         )}
                         {/* Password */}
-                        <div className="mb-4">
-                            <label htmlFor="password" className="block text-sm font-bold text-gray-700">Password</label>
-                            <input
-                                type="password"
-                                id="password"
-                                name="password"
-                                value={isRegister ? regFormData.password : loginFormData.password}
-                                onChange={isRegister ? handleChange : handleLoginChange}
-                                className="w-full px-3 py-2 mt-1 text-sm border rounded-md focus:outline-none focus:border-blue-500"
-                                placeholder="Enter your password"
-                            />
-                            {errors.password && <p className="error-validity text-red-500 text-xs mt-1">{errors.password}</p>}
-                        </div>
+                        {(isRegister || isLogin) && (
+                            <div className="mb-4">
+                                <label htmlFor="password" className="block text-sm font-bold text-gray-700">Password</label>
+                                <input
+                                    type="password"
+                                    id="password"
+                                    name="password"
+                                    value={isRegister ? regFormData.password : loginFormData.password}
+                                    onChange={isRegister ? handleChange : handleLoginChange}
+                                    className="w-full px-3 py-2 mt-1 text-sm border rounded-md focus:outline-none focus:border-blue-500"
+                                    placeholder="Enter your password"
+                                />
+                                {errors.password && <p className="error-validity text-red-500 text-xs mt-1">{errors.password}</p>}
+                            </div>
+                        )}
                         {/* Confirm Password */}
                         {isRegister && (
                             <div className="mb-4">
@@ -329,7 +371,6 @@ const Loginsignup = ({ updateUser, updateLogin, handleCloseModal }) => {
                                             id="lookingForTalent"
                                             name="isEmployer"
                                             value={true}
-                                            // checked={regFormData.isEmployer === 'true'}
                                             onChange={handleChange}
                                             onBlur={handleBlur}
                                             className="mr-2"
@@ -342,7 +383,6 @@ const Loginsignup = ({ updateUser, updateLogin, handleCloseModal }) => {
                                             id="lookingForJob"
                                             name="isEmployer"
                                             value={false}
-                                            // checked={regFormData.isEmployer === 'false'}
                                             onChange={handleChange}
                                             onBlur={handleBlur}
                                             className="mr-2"
@@ -353,22 +393,42 @@ const Loginsignup = ({ updateUser, updateLogin, handleCloseModal }) => {
                                 </div>
                             </div>
                         )}
+                        {/* Reset Password form */}
+                        {isResetPassword && (
+                            <>
+                                {/* Email */}
+                                <div className="mb-4">
+                                    <label htmlFor="resetEmail" className="block text-sm font-bold text-gray-700">Email</label>
+                                    <input
+                                        type="email"
+                                        id="resetEmail"
+                                        name="resetEmail"
+                                        value={resetPasswordFormData.email}
+                                        onChange={(e) => setResetPasswordFormData({ email: e.target.value })}
+                                        className="w-full px-3 py-2 mt-1 text-sm border rounded-md focus:outline-none focus:border-blue-500"
+                                        placeholder="Enter your email"
+                                    />
+                                </div>
+                            </>
+                        )}
                         {/* Submit Button */}
                         <div className="mb-6">
                             <button
                                 type="submit"
                                 className="w-full px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
                             >
-                                {isRegister ? "Register Account" : "Login"}
+                                {isRegister ? "Register Account" : isResetPassword ? "Reset Password" : "Login"}
                             </button>
                         </div>
                     </form>
-                    {/* Forgot Password */}
                     {!isRegister ? (
                         <div>
                             <hr className="mb-6 border-t" />
                             <div className="text-center">
-                                <a href="#" className="text-sm text-blue-500 hover:text-blue-800">Forgot Password?</a>
+                                {isRegister || isLogin ? (
+                                    <a href="#" className="text-sm text-blue-500 hover:text-blue-800" onClick={() => setAction("ResetPassword")}>Forgot Password?</a>
+                                ) : (<a href="#" className="text-sm text-blue-500 hover:text-blue-800" onClick={() => setAction("Login")}>Back to Login?</a>
+                                )}
                             </div>
                             {/* Toggle Register/Login */}
                             <div className="text-center">
