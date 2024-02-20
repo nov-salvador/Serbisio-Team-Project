@@ -12,7 +12,7 @@ const JobForm = () => {
     category: '',
     location: '',
     duration: '',
-    rate: '',
+    budgetPerHour: '',
     description: '',
     photoUrl: '',
     postedDate: currentDate,
@@ -27,31 +27,38 @@ const JobForm = () => {
       })
       .catch(error => {
         console.log('Error fetching categories:', error);
-      });
+    });
   }, []);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setJobDetails(prevState => ({
-      ...prevState,
-      [name]: value
+        ...prevState,
+        [name]: value === '' ? '' : isNaN(value) ? value : parseFloat(value)
     }));
-  };
-
+};
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3000/createJob', jobDetails);
-      console.log(response.data);
+      const user = localStorage.getItem('user')
+      const parseUser = JSON.parse(user)
+      const response = await fetch(`http://localhost:3000/createJob/${parseUser._id}`,{
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json' // Set content type to JSON
+        },
+        body: JSON.stringify(jobDetails)
+      });
+      const job = await response.json()
       setJobDetails({
         jobTitle: '',
         category: '',
         location: '',
         duration: '',
-        rate: '',
+        budgetPerHour: '',
         description: '',
         photoUrl: '',
       });
+      console.log(jobDetails)
     } catch (error) {
       console.error('Error creating job:', error);
     }
@@ -66,16 +73,23 @@ const JobForm = () => {
             Job Details
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <input type="text" name="area" id="area" placeholder="Job Title" className="input-field rounded-md border border-[#e0e0e0] bg-white py-1 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md" />
+            <input 
+              type="text" 
+              name="jobTitle"  
+              placeholder="Job Title"
+              value={jobDetails.jobTitle} 
+              className="input-field rounded-md border border-[#e0e0e0] bg-white py-1 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md" 
+              onChange={handleChange} 
+            />
             <select
               id="category"
               name="category"
-              value={jobDetails.category}
+              value={jobDetails.category} 
               onChange={handleChange}
               className="input-field rounded-md border border-[#e0e0e0] bg-white py-1 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md">
               <option value="">Select Category</option>
               {categories.map((category, index) => (
-                <option key={index} value={category.id}>{category.name}</option>
+                <option key={index} value={category.name}>{category.name}</option>
               ))}
             </select>
 
@@ -83,7 +97,14 @@ const JobForm = () => {
               <div className="absolute inset-y-0 right-12 flex items-center pl-3.5 pointer-events-none text-[#6B7280] ">
                 day/s
               </div>
-              <input type="number" id="duration" className="block p-2.5 w-full z-20  bg-white py-1 px-6 text-base font-medium text-[#6B7280]  outline-none rounded-md border border-[#e0e0e0] focus:border-[#6A64F1] focus:shadow-md" placeholder="Duration" />
+              <input 
+                type="number" 
+                name="duration" 
+                className="block p-2.5 w-full z-20  bg-white py-1 px-6 text-base font-medium text-[#6B7280]  outline-none rounded-md border border-[#e0e0e0] focus:border-[#6A64F1] focus:shadow-md" 
+                placeholder="Duration" 
+                value={isNaN(jobDetails.duration) ? '' : jobDetails.duration}
+                onChange={handleChange}
+              />
             </div>
             <div className="relative w-full">
               <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-[#6B7280] ">
@@ -92,7 +113,15 @@ const JobForm = () => {
               <div className="absolute inset-y-0 right-12 flex items-center pl-3.5 pointer-events-none text-[#6B7280] ">
                 /hour
               </div>
-              <input type="number" id="rate" className="block p-2.5 w-full z-20 pl-10  bg-white py-1 px-6 text-base font-medium text-[#6B7280]  outline-none rounded-md border border-[#e0e0e0] focus:border-[#6A64F1] focus:shadow-md" placeholder="Hourly Rate" />
+              <input 
+                type="number" 
+                id="budgetPerHour" 
+                className="block p-2.5 w-full z-20 pl-10  bg-white py-1 px-6 text-base font-medium text-[#6B7280]  outline-none rounded-md border border-[#e0e0e0] focus:border-[#6A64F1] focus:shadow-md" 
+                placeholder="Hourly budgetPerHour" 
+                name='budgetPerHour'
+                value={isNaN(jobDetails.budgetPerHour) ? '' : jobDetails.budgetPerHour}
+                onChange={handleChange}
+                />
             </div>
           </div>
         </div>
@@ -100,16 +129,40 @@ const JobForm = () => {
           <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-[#6B7280]">
             < IoLocationOutline />
           </div>
-          <input type="text" id="location" className="block p-2.5 w-full z-20 pl-10  bg-white py-1 px-6 text-base font-medium text-[#6B7280]  outline-none rounded-md border border-[#e0e0e0] focus:border-[#6A64F1] focus:shadow-md" placeholder="Location" />
+          <input 
+            type="text" 
+            id="location" 
+            name="location"
+            className="block p-2.5 w-full z-20 pl-10  bg-white py-1 px-6 text-base font-medium text-[#6B7280]  outline-none rounded-md border border-[#e0e0e0] focus:border-[#6A64F1] focus:shadow-md" 
+            placeholder="Location" 
+            value={jobDetails.location} 
+            onChange={handleChange} 
+          />
         </div>
         <div>
-          <textarea rows="4" placeholder="Description" id="description" name="description" value={jobDetails.description} onChange={handleChange} className="w-full rounded-md border border-[#e0e0e0] bg-white py-1 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md" ></textarea>
+          <textarea 
+            rows="4" 
+            placeholder="Description" 
+            id="description" 
+            name="description" 
+            value={jobDetails.description} 
+            onChange={handleChange}
+            className="w-full rounded-md border border-[#e0e0e0] bg-white py-1 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md" 
+          />
         </div>
         <div className="relative w-full">
           <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-[#6B7280]">
-            <AiOutlinePicture /> &nbsp; https://
+            <AiOutlinePicture /> &nbsp; link
           </div>
-          <input type="text" id="photoUrl" className="block p-2.5 w-full z-20 pl-24  bg-white py-1 px-6 text-base font-medium text-[#6B7280]  outline-none rounded-md border border-[#e0e0e0] focus:border-[#6A64F1] focus:shadow-md" placeholder="Enter Photo URL" />
+          <input 
+            type="text" 
+            id="photoUrl" 
+            name='photoUrl'
+            className="block p-2.5 w-full z-20 pl-24  bg-white py-1 px-6 text-base font-medium text-[#6B7280]  outline-none rounded-md border border-[#e0e0e0] focus:border-[#6A64F1] focus:shadow-md" 
+            placeholder="Enter Photo URL" 
+            onChange={handleChange}
+            value={jobDetails.photoUrl} 
+          />
         </div>
         <div className="text-center">
           <button type="submit" className="inline-block bg-blue-500 text-white px-6 py-3 rounded-md transition duration-300 hover:bg-blue-600">Publish Job</button>

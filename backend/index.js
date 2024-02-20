@@ -6,6 +6,7 @@ import morgan from 'morgan';
 import authRoute from './routes/Auth.js'
 import { upload } from './middleware/multer.js';
 import { uploadImg } from './middleware/uploadImg.js';
+import { createJob } from './controllers/CreateJob.js';
 
 //Connect to DB
 mongoose.connect(process.env.DB_URL);
@@ -18,6 +19,7 @@ app.use("/auth", authRoute)
 
 //Single Route
 app.post("/auth/register", registerUser);
+app.post("/createJob/:userId", createJob)
 
 app.post("/upload", upload.single("userPicture"), uploadImg)
 
