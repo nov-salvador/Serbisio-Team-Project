@@ -4,26 +4,31 @@ import { PiDotsNineBold } from "react-icons/pi";
 import { LuHeart, LuSearch, LuBell, LuUser } from "react-icons/lu";
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import CreateJob from './JobListing/CreateJob';
 
 const Header = () => {
     const { handleLogout, handleCloseModal } = useAuth();
     const getUser = localStorage.getItem('user')
     const parseUser = JSON.parse(getUser)
-
+    const { isLogged, handleOpenModal } = useAuth();
 
     return (
-        <div className=''>
+        <div className='z-50'>
             {/* Top Header */}
             <header className="bg-sky-500 text-white py-2 px-12 font-light text-xs">
                 <div className="container mx-auto flex justify-between items-center">
                     <div>Welcome {getUser ? parseUser.firstname : 'Guest'} to Serbis.io</div>
                     <nav>
                         <ul className="flex space-x-4">
-                            <li><NavLink to="/jobs" className="hover:text-gray-400">POST JOB</NavLink></li>
+                            {isLogged && (
+                                <>
+                                    <li><CreateJob buttonText="Post New Job" /></li>
+                                    <li>|</li>
+                                </>
+                            )}
+                            <li><NavLink to="/job-lists" className="hover:text-gray-400">Latest Jobs</NavLink></li>
                             <li>|</li>
-                            <li><NavLink to="/job-lists" className="hover:text-gray-400">LATEST JOBS</NavLink></li>
-                            <li>|</li>
-                            <li><NavLink to="/jobs" className="hover:text-gray-400">TRENDING JOBS</NavLink></li>
+                            <li><NavLink to="/blog" className="hover:text-gray-400">Blog Posts</NavLink></li>
                         </ul>
                     </nav>
                     <nav>
