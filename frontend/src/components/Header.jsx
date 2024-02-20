@@ -5,28 +5,18 @@ import { LuHeart, LuSearch, LuBell, LuUser } from "react-icons/lu";
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-const Header = ({ loggedUser, updateUser, updateLogin }) => {
-    function handleLogout() {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        updateLogin(false)
-    }
-    const {handleLogout, handleCloseModal} = useAuth();
+const Header = () => {
+    const { handleLogout, handleCloseModal } = useAuth();
     const getUser = localStorage.getItem('user')
     const parseUser = JSON.parse(getUser)
 
 
     return (
         <div className=''>
-            {!getUser && showModal && (
-                <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
-                    <Loginsignup updateUser={updateUser} updateLogin={updateLogin} handleCloseModal={handleCloseModal} />
-                </div>
-            )}
             {/* Top Header */}
             <header className="bg-sky-500 text-white py-2 px-12 font-light text-xs">
                 <div className="container mx-auto flex justify-between items-center">
-                    <div>Welcome {getUser ? <span className='font-bold'>{parseUser.firstname}</span> : 'Guest'} to Serbis.io</div>
+                    <div>Welcome {getUser ? parseUser.firstname : 'Guest'} to Serbis.io</div>
                     <nav>
                         <ul className="flex space-x-4">
                             <li><NavLink to="/jobs" className="hover:text-gray-400">POST JOB</NavLink></li>
@@ -39,14 +29,11 @@ const Header = ({ loggedUser, updateUser, updateLogin }) => {
                     <nav>
                         <ul className="list-none">
                             <li>
-                                <a
-                                    href="#" className="hover:text-gray-400"> {getUser ? <button type='button' onClick={handleLogout}>Logout</button>
-                                        : <button onClick={() => setShowModal(true)}>Login/Signup</button>}
-
-                                </a>
+                                <button className="hover:text-gray-400" type='button' onClick={() => { handleLogout(); handleCloseModal() }}>{getUser ? "Logout" : 'LOGIN | SIGNUP'}</button>
                             </li>
                         </ul>
                     </nav>
+
                 </div>
             </header>
 
@@ -77,10 +64,10 @@ const Header = ({ loggedUser, updateUser, updateLogin }) => {
                     {/* User Icons */}
                     <div className="flex space-x-4 flex-grow justify-end">
                         {getUser ?
-                             (<NavLink to={`/${parseUser._id}`}>
+                            (<NavLink to={`/${parseUser._id}`}>
                                 <LuUser className="text-gray-900 hover:text-gray-300 cursor-pointer" />
                             </NavLink>)
-                            : (<button onClick={() => setShowModal(true)}>
+                            : (<button onClick={() => { handleLogout(); handleCloseModal() }}>
                                 <LuUser className="text-gray-900 hover:text-gray-300 cursor-pointer" />
                             </button>)}
                         <LuSearch className="text-gray-900 hover:text-gray-300 cursor-pointer" />
