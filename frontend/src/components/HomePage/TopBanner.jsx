@@ -3,8 +3,8 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import image1 from '/src/assets/main-banner/1.png';
-import image2 from '/src/assets/main-banner/2.webp';
-import image3 from '/src/assets/main-banner/3.webp';
+import image2 from '/src/assets/main-banner/2.jpg';
+import image3 from '/src/assets/main-banner/3.jpg';
 
 //npm install react-slick slick-carousel
 export default function TopBanner() {
