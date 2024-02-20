@@ -1,5 +1,15 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { FaCcMastercard } from "react-icons/fa6";
+import { FaCcVisa } from "react-icons/fa";
+import { BsBank } from "react-icons/bs";
+import { SiBitcoincash } from "react-icons/si";
+import { SiThurgauerkantonalbank } from "react-icons/si";
+import { FaFedex } from "react-icons/fa";
+import { FaUps } from "react-icons/fa";
+import { FaDhl } from "react-icons/fa";
+
+
 
 export default function Footer() {
     return (
@@ -22,7 +32,19 @@ export default function Footer() {
                     </div>
                     <div className="w-full md:w-1/4">
                         <div className="font-semibold">PAYMENT</div>
-                        <ul className="mt-2">
+                        <ul className="mt-2 flex">
+                            <li className='mx-1'><FaCcMastercard /></li>
+                            <li className='mx-1'><FaCcVisa /></li>
+                            <li className='mx-1'><BsBank /></li>
+                            <li className='mx-1'><SiBitcoincash /></li>
+                            <li className='mx-1'><SiThurgauerkantonalbank />
+</li>
+                        </ul>
+                        <div className="font-semibold mt-2">LOGISTICS</div>
+                        <ul className="mt-2 flex">
+                            <li className='mx-1'><FaFedex /></li>
+                            <li className='mx-1'><FaUps /></li>
+                            <li className='mx-1'><FaDhl /></li>
                         </ul>
                     </div>
                     <div className="w-full md:w-1/4">
