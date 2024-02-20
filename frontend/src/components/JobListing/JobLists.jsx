@@ -100,7 +100,6 @@ const JobListTable = ({ filteredJobs }) => {
                                 <div className="ml-4">
                                     <div className="text-sm font-medium text-gray-900">{isLogged ? job.postedBy : maskName(job.postedBy)}</div>
                                     <div className="text-sm text-gray-500">{job.location}</div>
-                                    <div className="text-sm text-gray-500">Email</div>
                                 </div>
                             </div>
                         </td>
