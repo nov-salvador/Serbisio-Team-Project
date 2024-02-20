@@ -13,6 +13,7 @@ import UserProfileLink from './components/UserProfile/UserProfileLink';
 import JobLists from './components/JobListing/JobLists';
 import Loginsignup from './components/LoginSignup/LoginSignup';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import Blog from './components/Blog/Blog';
 
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
                 <Route path="top-workers" element={<TopWorkers />} />
                 <Route path="about" element={<AboutPage />} />
                 <Route path="job-lists" element={<JobLists />} />
+                <Route path="blog" element={<Blog />} />
                 <Route path="/:userId" element={<UserProfileLink />} />
                 <Route path="*" element={<NotFoundPage />} />
               </Routes>
