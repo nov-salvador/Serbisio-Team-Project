@@ -16,7 +16,7 @@ export default function Footer() {
                     <div className="w-full md:w-1/4">
                         <div className="font-semibold">ABOUT SERBIS.IO</div>
                         <ul className="mt-2">
-                        <li><NavLink to="/about" className="text-white hover:text-gray-400" target="_blank">About Us</NavLink></li>
+                        <li><NavLink to="https://nlxndrrrr.github.io/Personal-Project/" className="text-white hover:text-gray-400" target="_blank">About Us</NavLink></li>
                         <li><NavLink to="/blog" className="text-white hover:text-gray-400" target="_blank">Serbis.io Blog</NavLink></li>
                         </ul>
                     </div>
