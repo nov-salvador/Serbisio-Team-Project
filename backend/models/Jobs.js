@@ -45,6 +45,7 @@ const jobsSchema = new mongoose.Schema({
       },
       message: props => `${props.value} is not a valid URL!`,
     },
+    default: "www.worldconstructiontoday.com/wp-content/uploads/2020/11/constructon-worker-wellfare.jpg"
   },
   location: {
     type: String,

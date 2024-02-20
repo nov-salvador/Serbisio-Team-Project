@@ -7,21 +7,23 @@ import TopWorkers from './TopWorkers';
 import TopClients from './TopEmployers';
 import NewsLetter from '../NewsLetter';
 import Loginsignup from '../LoginSignup/LoginSignup';
+import { useAuth } from '../../context/AuthContext';
 
-export default function HomePage({ login, updateUser, updateLogin }) {
+export default function HomePage() {
     const [showModal, setShowModal] = useState(true);
+    const {isLogged} = useAuth();
 
     const handleCloseModal = () => {
         setShowModal(false);
     };
 
     return (
-        <div className=''>
-            {!login && showModal && (
+        <div className='z-0'>
+            {/* {!isLogged && showModal && (
                 <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
-                    <Loginsignup updateUser={updateUser} updateLogin={updateLogin} handleCloseModal={handleCloseModal} />
+                    <Loginsignup handleCloseModal={handleCloseModal} />
                 </div>
-            )}
+            )} */}
             <div className="w-11/12 mx-auto">
                 <TopBanner />
             </div>

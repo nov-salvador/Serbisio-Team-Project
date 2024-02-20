@@ -12,45 +12,37 @@ import TopWorkers from './components/HomePage/TopWorkers';
 import UserProfileLink from './components/UserProfile/UserProfileLink';
 import JobLists from './components/JobListing/JobLists';
 import Loginsignup from './components/LoginSignup/LoginSignup';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import Blog from './components/Blog/Blog';
 
 
 function App() {
 
-  const [login, setLogin] = useState(false);
-  const [loggedUser, setLoggedUser] = useState()
-  const [token, setToken] = useState(null)
+  // const [login, setLogin] = useState(false);
+  // const [loggedUser, setLoggedUser] = useState()
+  // const [token, setToken] = useState(null)
+  const {isLogged, showModal} = useAuth();
+ 
 
-  function updateLogin(newValue){
-    setLogin(newValue)
-  }
-
-  useEffect(() => {
-    const hasToken = localStorage.getItem('token')
-    const hasUser = localStorage.getItem('user')
-    if(hasToken && hasUser){
-      setLogin(true)
-    }
-
-  }, [login])
   return (
-        <Router> 
             <div className="mx-auto flex flex-col justify-center">
-            <Header loggedUser={loggedUser} updateLogin={updateLogin}/>
-            <Routes>
-              <Route path="/" element={<HomePage login={login} updateLogin={updateLogin}/>} />
-              <Route path="category" element={<Category />} />
-              <Route path="jobs" element={<Jobs />} />
-              <Route path="category" element={<Category />} />
-              <Route path="top-employers" element={<TopEmployers />} />
-              <Route path="top-workers" element={<TopWorkers />} />
-              <Route path="about" element={<AboutPage />} />
-              <Route path="job-lists" element={<JobLists />} />
-              <Route path="/:userId" element={<UserProfileLink />} />
-              <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-            <Footer />
+              <Header/>
+              {!isLogged && showModal && <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50"> <Loginsignup/> </div>}
+              <Routes>
+                <Route path="/" element={<HomePage/>} />
+                <Route path="category" element={<Category />} />
+                <Route path="jobs" element={<Jobs />} />
+                <Route path="category" element={<Category />} />
+                <Route path="top-employers" element={<TopEmployers />} />
+                <Route path="top-workers" element={<TopWorkers />} />
+                <Route path="about" element={<AboutPage />} />
+                <Route path="job-lists" element={<JobLists />} />
+                <Route path="blog" element={<Blog />} />
+                <Route path="/:userId" element={<UserProfileLink />} />
+                <Route path="*" element={<NotFoundPage />} />
+              </Routes>
+              <Footer />
             </div>
-        </Router>
   );
 }
 

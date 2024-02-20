@@ -3,14 +3,17 @@ import { Form, useNavigate } from "react-router-dom";
 import * as yup from 'yup';
 import { IoMdCloseCircle } from "react-icons/io";
 import Swal from 'sweetalert2';
+import { useAuth } from "../../context/AuthContext";
 
-const Loginsignup = ({ updateUser, updateLogin, handleCloseModal }) => {
+
+const Loginsignup = () => {
 
     const navigate = useNavigate();
     const [action, setAction] = useState("Sign Up");
     const isLogin = action === "Login"
     const isRegister = action === "Sign Up";
     const isResetPassword = action === "ResetPassword";
+    const {handleLogin, handleCloseModal} = useAuth();
 
     const registerSchema = yup.object().shape({
         firstname: yup.string().required("First name is required"),
@@ -49,7 +52,6 @@ const Loginsignup = ({ updateUser, updateLogin, handleCloseModal }) => {
                 ...prevregFormData,
                 [name]: value
             }));
-            console.log(regFormData)
         } else {
             // For other fields, update normally
             setRegFormData(prevregFormData => ({
@@ -184,8 +186,7 @@ const Loginsignup = ({ updateUser, updateLogin, handleCloseModal }) => {
                 if (user.message === "Successful login") {
                     localStorage.setItem('token', user.token)
                     localStorage.setItem('user', JSON.stringify(user.user))
-                    updateLogin(true)
-                    navigate("/");
+                    handleLogin()
                 } else { alert(user.message) }
                 console.log('This is the reponse:', user);
                 setLoginFormData({
