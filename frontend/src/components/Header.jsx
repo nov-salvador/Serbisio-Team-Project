@@ -79,11 +79,13 @@ const Header = ({ loggedUser, updateUser, updateLogin }) => {
 
                     {/* User Icons */}
                     <div className="flex space-x-4 flex-grow justify-end">
-                        {/* {getUser ? (
-                            <LuUser className="text-gray-900 hover:text-gray-300 cursor-pointer" />
-                        ) : (
-                            <Loginsignup action={action} updateLogin={handleLogin} updateSignup={handleSignup} />
-                        )} */}
+                        {getUser ?
+                             (<NavLink to={`/${parseUser._id}`}>
+                                <LuUser className="text-gray-900 hover:text-gray-300 cursor-pointer" />
+                            </NavLink>)
+                            : (<button onClick={() => setShowModal(true)}>
+                                <LuUser className="text-gray-900 hover:text-gray-300 cursor-pointer" />
+                            </button>)}
                         <LuSearch className="text-gray-900 hover:text-gray-300 cursor-pointer" />
                         <LuHeart className="text-gray-900 hover:text-gray-300 cursor-pointer" />
                         <LuBell className="text-gray-900 hover:text-gray-300 cursor-pointer" />
