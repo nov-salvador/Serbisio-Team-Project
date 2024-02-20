@@ -3,7 +3,7 @@ import logo from '../assets/serbisyo-logo.png';
 import { PiDotsNineBold } from "react-icons/pi";
 import { LuHeart, LuSearch, LuBell, LuUser } from "react-icons/lu";
 import { NavLink, useNavigate } from 'react-router-dom';
-import Loginsignup from './LoginSignup/LoginSignup';
+import { useAuth } from '../context/AuthContext';
 
 const Header = ({ loggedUser, updateUser, updateLogin }) => {
     function handleLogout() {
@@ -11,13 +11,10 @@ const Header = ({ loggedUser, updateUser, updateLogin }) => {
         localStorage.removeItem('user');
         updateLogin(false)
     }
+    const {handleLogout, handleCloseModal} = useAuth();
     const getUser = localStorage.getItem('user')
     const parseUser = JSON.parse(getUser)
 
-    const [showModal, setShowModal] = useState(false);
-    const handleCloseModal = () => {
-        setShowModal(false);
-    };
 
     return (
         <div className=''>
