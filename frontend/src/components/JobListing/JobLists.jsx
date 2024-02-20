@@ -3,11 +3,12 @@ import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router';
 import JobForm from './JobForm';
 import CreateJob from './CreateJob';
-import {useAuth} from '../../context/AuthContext'
+import { useAuth } from '../../context/AuthContext'
 import Loginsignup from '../LoginSignup/LoginSignup';
+import Swal from 'sweetalert2';
 
 const JobListTable = ({ filteredJobs }) => {
-    const {isLogged, handleOpenModal} = useAuth();
+    const { isLogged, handleOpenModal } = useAuth();
     const formatDate = (postedDate) => {
         const formattedDate = new Date(postedDate).toLocaleDateString('en-US', {
             year: 'numeric',
@@ -22,24 +23,35 @@ const JobListTable = ({ filteredJobs }) => {
     };
     function maskName(name) {
         const names = name.split(" ");
-        
         const firstName = names[0][0] + "*".repeat(names[0].length - 2) + names[0][names[0].length - 1];
-        
         const lastName = names[1][0] + "*".repeat(names[1].length - 2) + names[1][names[1].length - 1];
-        
         return firstName + " " + lastName;
     }
-    function maskBudget(amount){
+    function maskBudget(amount) {
         const str = amount.toString()
         const formated = "*".repeat(str.length - 1) + str[str.length - 1]
         return formated
     }
-    function verifyLog(){
-        if(!isLogged){
-            handleOpenModal()
+
+    function verifyLog(action) {
+        if (!isLogged) {
+          handleOpenModal();
+        } else {
+          let message = '';
+          if (action === 'details') {
+            message = 'You are viewing job details.';
+          } else if (action === 'apply') {
+            message = 'Your application has been submitted successfully.';
+          }
+    
+          Swal.fire({
+            icon: 'success',
+            title: 'Thank You!',
+            text: message,
+          });
         }
-        console.log("open detail or apply")
-    }
+      }
+
     return (
         <table className="w-full divide-y divide-gray-200 overflow-x-auto">
             <thead className="bg-gray-50">
@@ -107,8 +119,8 @@ const JobListTable = ({ filteredJobs }) => {
                             <div className="text-sm text-gray-900">{job.status}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap  text-sm font-medium">
-                            <button className="text-indigo-600 hover:text-indigo-900" onClick={verifyLog}>Details</button>
-                            <button className="ml-2 text-red-600 hover:text-red-900" onClick={verifyLog}>Apply</button>
+                            <button className="text-indigo-600 hover:text-indigo-900" onClick={() => verifyLog('details')}>Details</button>
+                            <button className="ml-2 text-red-600 hover:text-red-900" onClick={() => verifyLog('apply')}>Apply</button>
                         </td>
                     </tr>
                 ))}
@@ -118,6 +130,7 @@ const JobListTable = ({ filteredJobs }) => {
 };
 
 const JobLists = () => {
+    const { isLogged, handleOpenModal } = useAuth();
     const [jobs, setJobs] = useState([]);
     const [filteredJobs, setFilteredJobs] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState('');
@@ -295,7 +308,10 @@ const JobLists = () => {
                         <option value="dateDescending">Date (Descending)</option>
                     </select>
                 </div>
-                <CreateJob />
+                { isLogged ? 
+                (<span className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded">
+                    <CreateJob buttonText="Create Job Post" />
+                </span> ) : ""}
             </div>
             <JobListTable filteredJobs={filteredJobs} />
         </div>
