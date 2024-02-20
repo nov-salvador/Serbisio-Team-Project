@@ -18,7 +18,7 @@ export default function HomePage() {
     };
 
     return (
-        <div className=''>
+        <div className='z-0'>
             {/* {!isLogged && showModal && (
                 <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
                     <Loginsignup handleCloseModal={handleCloseModal} />
