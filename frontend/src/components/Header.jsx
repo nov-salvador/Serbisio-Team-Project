@@ -2,18 +2,15 @@ import React, { useEffect, useState } from 'react';
 import logo from '../assets/serbisyo-logo.png';
 import { PiDotsNineBold } from "react-icons/pi";
 import { LuHeart, LuSearch, LuBell, LuUser } from "react-icons/lu";
-import { NavLink, useNavigate, Navigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
-const Header = ({loggedUser, updateLogin}) => {
-    const navigate = useNavigate()
-    function handleLogout(){
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        updateLogin(false)
-        navigate('/')
-    }
+const Header = () => {
+    const {handleLogout, handleCloseModal} = useAuth();
     const getUser = localStorage.getItem('user')
     const parseUser = JSON.parse(getUser)
+
+
     return (
         <div className=''>
             {/* Top Header */}
@@ -32,12 +29,9 @@ const Header = ({loggedUser, updateLogin}) => {
                     <nav>
     <ul className="list-none">
         <li>
-            <a
-                href="/"
-                className="hover:text-gray-400"
-            >
-                <button type='button' onClick={handleLogout}> {getUser ? "Logout" : 'LOGIN | SIGNUP'}</button>
-            </a>
+            
+            <button className="hover:text-gray-400" type='button' onClick={() => {handleLogout(); handleCloseModal()}}>{getUser ? "Logout" : 'LOGIN | SIGNUP' }</button> 
+            
         </li>
     </ul>
 </nav>
@@ -71,7 +65,7 @@ const Header = ({loggedUser, updateLogin}) => {
 
                     {/* User Icons */}
                     <div className="flex space-x-4 flex-grow justify-end">
-                        {/* {user && user.firstname ? (
+                        {/* {getUser ? (
                             <LuUser className="text-gray-900 hover:text-gray-300 cursor-pointer" />
                         ) : (
                             <Loginsignup action={action} updateLogin={handleLogin} updateSignup={handleSignup} />

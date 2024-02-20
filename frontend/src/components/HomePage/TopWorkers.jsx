@@ -5,6 +5,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import { GrFormPreviousLink, GrFormNextLink } from "react-icons/gr";
 import axios from 'axios';
 import UserPopup from '../UserProfile/UserPopup';
+import { useAuth } from '../../context/AuthContext';
 
 
 const NextArrow = (props) => {
@@ -35,6 +36,7 @@ export default function TopUsers() {
     const [users, setUsers] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
+    const {isLogged, handleOpenModal} = useAuth(); 
 
     useEffect(() => {
         axios.get('http://localhost:3000/getUsers')
@@ -74,6 +76,12 @@ export default function TopUsers() {
         setModalVisible(false);
     };
 
+    function verifyLog(){
+        if(!isLogged){
+            handleOpenModal()
+        }
+    }
+
     return (
         <div className="container mx-auto mb-10">
             <div className="flex justify-between items-center mb-4">
@@ -110,7 +118,18 @@ export default function TopUsers() {
                                 </div>
                                 <p className="text-md text-center font-semibold" style={{ fontSize: "12px" }}>({user.completedJobs} jobs completed)</p>
                                 <p className="text-md text-center font-semibold">Php {user.ratePerHour}/hr</p>
-                                <button onClick={() => handleViewServicesClick(user)} className="bg-sky-500 text-white px-2 py-2 mt-2 rounded-full text-xs w-full">View Services</button>
+                                <button 
+                                    onClick={() => {
+                                        if(!isLogged){
+                                            verifyLog()
+                                        }else{
+                                            handleViewServicesClick(user)
+                                        }
+                                    }} 
+                                    className="bg-sky-500 text-white px-2 py-2 mt-2 rounded-full text-xs w-full"
+                                >
+                                    View Services
+                                </button>
                             </div>
                         </div>
                     ))}
